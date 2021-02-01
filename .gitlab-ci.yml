@@ -13,7 +13,7 @@ test:nglint:
 # Testing phase: unit- and component tests
 test:karma:
   stage: test
-  image: trion/ng-cli-karma
+  image: trion/ng-cli
   script:
     - npm i
     - ng test --code-coverage --progress false --watch=false
