@@ -1,0 +1,10 @@
+<button
+  #button
+  mat-button
+  [color]="color"
+  [class.spinner]="loading"
+  [disabled]="loading || disabled"
+  (click)="onClick()"
+>
+  <ng-content></ng-content>
+</button>

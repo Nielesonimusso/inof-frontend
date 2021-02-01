@@ -1,0 +1,30 @@
+.select-ingredients-table-container {
+  .overflow-auto {
+    overflow: auto;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .search {
+    width: 500px;
+    margin-right: 40px;
+  }
+
+  .mat-col-name {
+    width: 45%;
+  }
+
+  .mat-col-company-code {
+    width: 25%;
+  }
+
+  .mat-col-standard-code {
+    width: 25%;
+  }
+
+  .mat-col-add {
+    width: 5%;
+  }
+}

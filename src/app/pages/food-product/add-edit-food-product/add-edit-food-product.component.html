@@ -1,0 +1,648 @@
+<div class="add-edit-food-product-container">
+  <form #ngForm="ngForm" (ngSubmit)="ngForm.form.valid && saveFoodProduct()">
+    <div class="add-edit-food-product-page-header">
+      <div class="add-edit-food-product-header-row">
+        <h2 style="margin: 0;">{{ isEditing ? 'Edit a Food Product' : 'Add a new Food Product' }}</h2>
+        <a id="cancel" style="margin-left: auto;" mat-button (click)="cancel()">CANCEL</a>
+        <app-loading-button
+          id="save"
+          mat-raised-button
+          color="primary"
+          (click)="ngForm.onSubmit($event)"
+          [disabled]="ngForm.form.invalid && ngForm.submitted"
+        >
+          SAVE
+        </app-loading-button>
+      </div>
+    </div>
+    <mat-card class="card-full-width">
+      <div *ngIf="!foodProduct; then loading; else loaded"></div>
+      <ng-template #loading>
+        <mat-tab-group mat-stretch-tabs [(selectedIndex)]="tabIndex">
+          <mat-tab label="SUMMARY">
+            <div class="loading-container">
+              <ngx-skeleton-loader count="5"></ngx-skeleton-loader>
+            </div>
+          </mat-tab>
+          <mat-tab label="INGREDIENTS">
+            <div class="loading-container">
+              <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+            </div>
+          </mat-tab>
+          <mat-tab label="PROCESSING">
+            <div class="loading-container">
+              <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+            </div>
+          </mat-tab>
+          <mat-tab label="PROPERTIES">
+            <div class="loading-container">
+              <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+            </div>
+          </mat-tab>
+          <mat-tab label="PACKAGING">
+            <div class="loading-container">
+              <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-template>
+      <ng-template #loaded>
+        <mat-tab-group mat-stretch-tabs [(selectedIndex)]="tabIndex" class="tabs" mat-align-tabs="center">
+          <!-- The Summary tab -->
+          <mat-tab ngModelGroup="summary" #ngSummary="ngModelGroup">
+            <ng-template mat-tab-label>
+              <span [ngClass]="{ 'mat-tab-label-invalid': ngForm.submitted && ngSummary.invalid }">SUMMARY *</span>
+            </ng-template>
+            <mat-grid-list cols="2">
+              <mat-grid-tile class="tile-flex-start">
+                <div class="left-align">
+                  <div class="summary-form">
+                    <h4>Summary</h4>
+                    <!-- The input field name of product -->
+                    <mat-form-field class="summary-table-full-width">
+                      <input
+                        id="name"
+                        name="name"
+                        matInput
+                        placeholder="Name of Product"
+                        [(ngModel)]="foodProduct.name"
+                        required
+                      />
+                    </mat-form-field>
+                    <table cellspacing="0">
+                      <tr>
+                        <!-- The input field company code -->
+                        <td>
+                          <mat-form-field class="summary-table-full-width">
+                            <input
+                              id="companyCode"
+                              name="companyCode"
+                              matInput
+                              placeholder="Company Code"
+                              [(ngModel)]="foodProduct.companyCode"
+                              required
+                            />
+                          </mat-form-field>
+                        </td>
+                        <!-- The input field standard code -->
+                        <td>
+                          <mat-form-field class="summary-table-full-width">
+                            <input
+                              id="standardCode"
+                              name="standardCode"
+                              matInput
+                              placeholder="Standard Code"
+                              [(ngModel)]="foodProduct.standardCode"
+                              required
+                            />
+                          </mat-form-field>
+                        </td>
+                      </tr>
+                      <!-- The input field dosage -->
+                      <tr>
+                        <td>
+                          <mat-form-field class="summary-table-full-width">
+                            <input
+                              id="dosage"
+                              name="dosage"
+                              type="number"
+                              matInput
+                              placeholder="Dosage"
+                              [(ngModel)]="foodProduct.dosage"
+                              required
+                            />
+                          </mat-form-field>
+                        </td>
+                        <!-- The input field unit -->
+                        <td>
+                          <mat-form-field class="summary-table-full-width">
+                            <input
+                              id="unit"
+                              name="unit"
+                              matInput
+                              placeholder="Unit"
+                              [(ngModel)]="foodProduct.dosageUnit"
+                              required
+                            />
+                          </mat-form-field>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </mat-grid-tile>
+
+              <mat-grid-tile class="tile-flex-start">
+                <div class="left-align">
+                  <h4>Permissions</h4>
+                  <mat-form-field style="width: 70%;">
+                    <mat-label>Select Companies To Share This Food Product With</mat-label>
+                    <mat-select
+                      [(ngModel)]="selectedCompanies"
+                      [compareWith]="compareCompanies"
+                      multiple
+                      name="mat-select"
+                      id="all-companies"
+                    >
+                      <mat-option *ngFor="let company of companies; index as i" [value]="company">
+                        {{ company.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <p>The following companies are allowed to see your food product:</p>
+                  <div id="selected-companies">
+                    <div *ngFor="let selectedCompany of selectedCompanies; index as i">
+                      {{ '- ' + selectedCompany.name }}
+                      <button
+                        id="selected-company-delete-button-{{ i }}"
+                        type="button"
+                        mat-icon-button
+                        (click)="removeCompany(i)"
+                      >
+                        <mat-icon class="mat-18" style="margin-bottom: 5px;">clear</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </mat-grid-tile>
+            </mat-grid-list>
+          </mat-tab>
+
+          <!-- The Ingredients tab -->
+          <mat-tab ngModelGroup="ingredients" #ngIngredients="ngModelGroup">
+            <ng-template mat-tab-label>
+              <span
+                [ngClass]="{
+                  'mat-tab-label-invalid':
+                    ngForm.submitted && (ngIngredients.invalid || foodProduct.ingredients.length == 0)
+                }"
+                >INGREDIENTS *</span
+              >
+            </ng-template>
+            <mat-grid-list cols="2">
+              <mat-grid-tile class="tile-flex-start">
+                <div class="left-align">
+                  <h4>Ingredients</h4>
+                  <div>
+                    <div class="overflow-auto">
+                      <mat-error *ngIf="foodProduct.ingredients.length == 0"
+                        >At least one ingredient needs to be selected.</mat-error
+                      >
+                      <table
+                        mat-table
+                        [dataSource]="foodProduct.ingredients"
+                        [trackBy]="tracker"
+                        id="ingredients-table"
+                        class="full-width"
+                        appMinLength="1"
+                      >
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="name">
+                          <th mat-header-cell *matHeaderCellDef class="mat-col-name">Name</th>
+                          <td mat-cell *matCellDef="let element; index as i">
+                            <mat-form-field floatLabel="never" style="width: 80%;">
+                              <input
+                                id="ingredient-name-{{ i }}"
+                                name="ingredient-name-{{ i }}"
+                                type="text"
+                                matInput
+                                placeholder="Name"
+                                [(ngModel)]="element.name"
+                                required
+                              />
+                            </mat-form-field>
+                          </td>
+                        </ng-container>
+
+                        <!-- Company Code Column -->
+                        <ng-container matColumnDef="companyCode">
+                          <th mat-header-cell *matHeaderCellDef class="mat-col-company-code">Company Code</th>
+                          <td mat-cell *matCellDef="let element">
+                            {{ element.companyCode }}
+                          </td>
+                        </ng-container>
+
+                        <!-- Standard Code Column -->
+                        <ng-container matColumnDef="standardCode">
+                          <th mat-header-cell *matHeaderCellDef class="mat-col-standard-code">Standard Code</th>
+                          <td mat-cell *matCellDef="let element">
+                            {{ element.standardCode }}
+                          </td>
+                        </ng-container>
+
+                        <!-- Amount Column -->
+                        <ng-container matColumnDef="amount">
+                          <th mat-header-cell *matHeaderCellDef class="mat-col-amount">Amount</th>
+                          <td mat-cell *matCellDef="let element; index as i">
+                            <mat-form-field floatLabel="never" class="width-50">
+                              <input
+                                id="ingredient-amount-{{ i }}"
+                                name="ingredient-amount-{{ i }}"
+                                type="number"
+                                matInput
+                                placeholder="Amount"
+                                [(ngModel)]="element.amount"
+                                required
+                              />
+                            </mat-form-field>
+                          </td>
+                        </ng-container>
+
+                        <!-- Unit Column -->
+                        <ng-container matColumnDef="unit">
+                          <th mat-header-cell *matHeaderCellDef class="mat-col-unit">Unit</th>
+                          <td mat-cell *matCellDef="let element; index as i">
+                            <mat-form-field floatLabel="never" class="width-50">
+                              <input
+                                id="ingredient-unit-{{ i }}"
+                                name="ingredient-unit-{{ i }}"
+                                matInput
+                                placeholder="Unit"
+                                [(ngModel)]="element.amountUnit"
+                                required
+                              />
+                            </mat-form-field>
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="delete">
+                          <th mat-header-cell *matHeaderCellDef class="mat-col-delete"></th>
+                          <td mat-cell *matCellDef="let element; index as i">
+                            <button
+                              id="ingredient-delete-button-{{ i }}"
+                              type="button"
+                              mat-icon-button
+                              (click)="deleteIngredient(i)"
+                            >
+                              <mat-icon>clear</mat-icon>
+                            </button>
+                          </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="tile-flex-start">
+                <div class="left-align">
+                  <h4>All Ingredients</h4>
+                  <app-select-ingredients-table
+                    [rows]="ingredients"
+                    (itemAdded)="onIngredientAdded($event)"
+                    pageTitle="All Ingredients"
+                  ></app-select-ingredients-table>
+                </div>
+              </mat-grid-tile>
+            </mat-grid-list>
+          </mat-tab>
+
+          <!-- The Processing tab -->
+          <mat-tab ngModelGroup="processingSteps" #ngProcessing="ngModelGroup">
+            <ng-template mat-tab-label>
+              <span [ngClass]="{ 'mat-tab-label-invalid': ngForm.submitted && ngProcessing.invalid }">PROCESSING</span>
+            </ng-template>
+            <div class="process-steps-form">
+              <h4>Processing</h4>
+              <!-- Iterate over the elements in the ArrPackaging -->
+              <div *ngFor="let step of foodProduct.processingSteps; index as i">
+                <mat-card class="mat-elevation-z4 mat-card-tabs-content">
+                  <table cellspacing="0" ngModelGroup="processingStep-{{ getUniqueID(step) }}">
+                    <div>
+                      <tr>
+                        <!-- The input field name of step -->
+                        <td>
+                          <mat-form-field class="process-steps-width">
+                            <input
+                              id="processing-step-name-{{ i }}"
+                              name="processing-step-name-{{ i }}"
+                              matInput
+                              placeholder="Name of step"
+                              [(ngModel)]="step.name"
+                              required
+                            />
+                          </mat-form-field>
+                        </td>
+                        <!-- The input field equipment -->
+                        <td>
+                          <mat-form-field class="process-steps-width">
+                            <input
+                              id="processing-step-equipment-{{ i }}"
+                              name="processing-step-equipment-{{ i }}"
+                              matInput
+                              placeholder="Equipment"
+                              [(ngModel)]="step.equipment"
+                              required
+                            />
+                          </mat-form-field>
+                        </td>
+                        <!-- Delete button -->
+                        <td>
+                          <button
+                            id="processing-step-delete-button-{{ i }}"
+                            type="button"
+                            mat-icon-button
+                            (click)="deleteProcessingStep(i)"
+                          >
+                            <mat-icon>clear</mat-icon>
+                          </button>
+                        </td>
+                      </tr>
+                    </div>
+                    <div
+                      *ngFor="let element of foodProduct.processingSteps[i].properties; index as j"
+                      class="full-width"
+                    >
+                      <div
+                        class="process-steps-properties-indent"
+                        ngModelGroup="processingStepProperty-{{ getUniqueID(element) }}"
+                      >
+                        <tr>
+                          <!-- The input field name of property -->
+                          <td style="width: 50%;">
+                            <mat-form-field style="width: 90%;">
+                              <input
+                                id="processing-step-property-name-{{ i }}-{{ j }}"
+                                name="processing-step-property-name-{{ i }}-{{ j }}"
+                                matInput
+                                placeholder="Name of property"
+                                [(ngModel)]="element.name"
+                                required
+                              />
+                            </mat-form-field>
+                          </td>
+                          <!-- The input field value -->
+                          <td style="width: 20%;">
+                            <mat-form-field style="width: 50%;">
+                              <input
+                                id="processing-step-property-value-{{ i }}-{{ j }}"
+                                name="processing-step-property-value-{{ i }}-{{ j }}"
+                                type="number"
+                                matInput
+                                placeholder="Value"
+                                [(ngModel)]="element.value"
+                                required
+                              />
+                            </mat-form-field>
+                          </td>
+                          <!-- The input field unit -->
+                          <td style="width: 30%;">
+                            <mat-form-field style="width: 80%;">
+                              <input
+                                id="processing-step-property-unit-{{ i }}-{{ j }}"
+                                name="processing-step-property-unit-{{ i }}-{{ j }}"
+                                matInput
+                                placeholder="Unit"
+                                [(ngModel)]="element.unit"
+                                required
+                              />
+                            </mat-form-field>
+                          </td>
+                          <!-- Delete button -->
+                          <td *ngIf="step.properties.length > 1">
+                            <button
+                              id="processing-step-property-delete-button-{{ i }}-{{ j }}"
+                              type="button"
+                              mat-icon-button
+                              (click)="deleteProcessingStepProperty(i, j)"
+                            >
+                              <mat-icon>clear</mat-icon>
+                            </button>
+                          </td>
+                        </tr>
+                      </div>
+                    </div>
+                    <!-- Button to add more processing steps -->
+                    <div class="process-steps-properties-indent">
+                      <button
+                        id="processing-step-property-add-button-{{ i }}"
+                        type="button"
+                        mat-button
+                        type="button"
+                        (click)="addProcessingStepProperty(i)"
+                      >
+                        + ADD NEW PROPERTY FOR THIS STEP
+                      </button>
+                    </div>
+                  </table>
+                </mat-card>
+              </div>
+              <!-- Button to add more processing steps -->
+              <button id="processing-step-add-button" mat-button type="button" (click)="addProcessingStep()">
+                + ADD NEW PROCESSING STEP
+              </button>
+            </div>
+          </mat-tab>
+
+          <!-- The Properties tab -->
+          <mat-tab ngModelGroup="foodProductProperties" #ngProperties="ngModelGroup">
+            <ng-template mat-tab-label>
+              <span [ngClass]="{ 'mat-tab-label-invalid': ngForm.submitted && ngProperties.invalid }">PROPERTIES</span>
+            </ng-template>
+            <div>
+              <h4>Properties</h4>
+              <!-- Iterate over the elements in the ArrProperty -->
+              <div *ngFor="let element of foodProduct.foodProductProperties; index as i">
+                <mat-card class="mat-elevation-z4 mat-card-tabs-content">
+                  <!-- The input field name of property-->
+                  <table ngModelGroup="foodProductProperty-{{ getUniqueID(element) }}">
+                    <tr>
+                      <td style="width: 30%;">
+                        <mat-form-field style="width: 80%;">
+                          <input
+                            id="property-name-{{ i }}"
+                            name="property-name-{{ i }}"
+                            matInput
+                            placeholder="Name of property"
+                            [(ngModel)]="element.name"
+                            required
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- The input field value -->
+                      <td style="width: 20%;">
+                        <mat-form-field style="width: 60%;">
+                          <input
+                            id="property-value-{{ i }}"
+                            name="property-value-{{ i }}"
+                            type="number"
+                            matInput
+                            placeholder="Value"
+                            [(ngModel)]="element.value"
+                            required
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- The input field unit -->
+                      <td style="width: 20%;">
+                        <mat-form-field style="width: 60%;">
+                          <input
+                            id="property-unit-{{ i }}"
+                            name="property-unit-{{ i }}"
+                            matInput
+                            placeholder="Unit"
+                            [(ngModel)]="element.unit"
+                            required
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- The input field method -->
+                      <td style="width: 20%;">
+                        <mat-form-field style="width: 80%;">
+                          <input
+                            id="property-method-{{ i }}"
+                            name="property-method-{{ i }}"
+                            matInput
+                            placeholder="Method"
+                            [(ngModel)]="element.method"
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- Delete button -->
+                      <td>
+                        <button
+                          id="property-delete-button-{{ i }}"
+                          type="button"
+                          mat-icon-button
+                          (click)="deleteProperty(i)"
+                        >
+                          <mat-icon>clear</mat-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </mat-card>
+              </div>
+              <!-- Button to add more properties -->
+              <button id="property-add-button" mat-button type="button" (click)="addProperty()">
+                + ADD NEW PROPERTY
+              </button>
+            </div>
+          </mat-tab>
+
+          <!-- The Packaging tab -->
+          <mat-tab ngModelGroup="packagings" #ngPackaging="ngModelGroup">
+            <ng-template mat-tab-label>
+              <span [ngClass]="{ 'mat-tab-label-invalid': ngForm.submitted && ngPackaging.invalid }">PACKAGING</span>
+            </ng-template>
+            <div>
+              <h4>Packaging</h4>
+              <!-- Iterate over the elements in the ArrPackaging -->
+              <div
+                *ngFor="let element of foodProduct.packagings; index as i"
+                ngModelGroup="packaging-{{ getUniqueID(element) }}"
+              >
+                <mat-card class="mat-elevation-z4 mat-card-tabs-packaging">
+                  <table>
+                    <tr>
+                      <!-- The input field name -->
+                      <td>
+                        <mat-form-field style="width: 70%;">
+                          <input
+                            id="packaging-name-{{ i }}"
+                            name="packaging-name-{{ i }}"
+                            matInput
+                            placeholder="Name"
+                            [(ngModel)]="element.name"
+                            required
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- The input field company code -->
+                      <td>
+                        <mat-form-field style="width: 70%;">
+                          <input
+                            id="packaging-companyCode-{{ i }}"
+                            name="packaging-companyCode-{{ i }}"
+                            matInput
+                            placeholder="Company Code"
+                            [(ngModel)]="element.companyCode"
+                            required
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- The input field standard code -->
+                      <td>
+                        <mat-form-field style="width: 70%;">
+                          <input
+                            id="packaging-standardCode-{{ i }}"
+                            name="packaging-standardCode-{{ i }}"
+                            matInput
+                            placeholder="Standard Code"
+                            [(ngModel)]="element.standardCode"
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- The input field shape -->
+                      <td>
+                        <mat-form-field style="width: 70%;">
+                          <input
+                            id="packaging-shape-{{ i }}"
+                            name="packaging-shape-{{ i }}"
+                            matInput
+                            placeholder="Shape"
+                            [(ngModel)]="element.shape"
+                            required
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- The input field thickness -->
+                      <td>
+                        <mat-form-field style="width: 70%;">
+                          <input
+                            id="packaging-thickness-{{ i }}"
+                            name="packaging-thickness-{{ i }}"
+                            type="number"
+                            matInput
+                            placeholder="Thickness"
+                            [(ngModel)]="element.thickness"
+                            required
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- The input field unit -->
+                      <td>
+                        <mat-form-field style="width: 70%;">
+                          <input
+                            id="packaging-unit-{{ i }}"
+                            name="packaging-unit-{{ i }}"
+                            matInput
+                            placeholder="Unit"
+                            [(ngModel)]="element.thicknessUnit"
+                            required
+                          />
+                        </mat-form-field>
+                      </td>
+                      <!-- Delete button -->
+                      <td>
+                        <button
+                          id="packaging-delete-button-{{ i }}"
+                          type="button"
+                          mat-icon-button
+                          (click)="deletePackaging(element)"
+                        >
+                          <mat-icon>clear</mat-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </mat-card>
+              </div>
+              <!-- Button to add more packagings -->
+              <button id="button-add-packaging" mat-button type="button" (click)="addPackaging()">
+                + ADD NEW PACKAGING
+              </button>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-template>
+    </mat-card>
+  </form>
+</div>

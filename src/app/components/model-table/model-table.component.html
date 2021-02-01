@@ -1,0 +1,142 @@
+<div class="model-container">
+  <div class="page-header">
+    <div class="left">
+      <h2 class="title">{{ pageTitle }}</h2>
+    </div>
+    <div class="right">
+      <mat-form-field class="search" id="searchBar">
+        <mat-label>
+          Search Model
+        </mat-label>
+        <mat-icon class="mat-icon-fix-lineheight" matSuffix>
+          search
+        </mat-icon>
+        <input (keyup)="applyFilter($event.target.value)" matInput type="search" />
+      </mat-form-field>
+      <button routerLink="./add" class="edit-button" color="primary" mat-raised-button>
+        ADD MODEL
+      </button>
+    </div>
+  </div>
+
+  <table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc" class="model-table-container table-transparant-header" mat-table>
+    <!-- isConnected Column -->
+    <ng-container matColumnDef="isConnected">
+      <th *matHeaderCellDef class="table-column" mat-header-cell></th>
+      <td
+        *matCellDef="let model"
+        class="table-row"
+        mat-cell
+        [ngClass]="model.isConnected ? 'connected' : 'not-connected'"
+      ></td>
+    </ng-container>
+
+    <!-- modelName Column -->
+    <ng-container matColumnDef="name">
+      <th *matHeaderCellDef class="table-column model-name-column" mat-header-cell>
+        Model name
+      </th>
+      <td *matCellDef="let model" class="table-row" mat-cell>
+        {{ model.name }}
+      </td>
+    </ng-container>
+
+    <!-- description Column -->
+    <ng-container matColumnDef="description">
+      <th *matHeaderCellDef class="table-column model-description-column" mat-header-cell>
+        Description
+      </th>
+      <td *matCellDef="let model" class="table-row" mat-cell>
+        {{ model.description }}
+      </td>
+    </ng-container>
+
+    <!-- price Column -->
+    <ng-container matColumnDef="price">
+      <th *matHeaderCellDef class="table-column model-price-usage-columns" mat-header-cell>
+        Price
+      </th>
+      <td *matCellDef="let model" class="table-row" mat-cell>
+        {{ model.price ? model.price : 0 }}<span class="small-font"> €/call</span>
+      </td>
+    </ng-container>
+
+    <!-- usage Column -->
+    <ng-container matColumnDef="usage">
+      <th *matHeaderCellDef class="table-column model-price-usage-columns" mat-header-cell>
+        Usage
+      </th>
+      <td *matCellDef="let model" class="table-row" mat-cell>
+        {{ model.useCount }}<span class="small-font"> calls</span>
+      </td>
+    </ng-container>
+
+    <!-- owner Column -->
+    <ng-container matColumnDef="owner">
+      <th *matHeaderCellDef class="table-column" mat-header-cell>
+        Owner
+      </th>
+      <td *matCellDef="let model" class="table-row" mat-cell>
+        {{ model.owner !== null ? model.owner.name : 'No Company' }}
+      </td>
+    </ng-container>
+
+    <!-- creator Column -->
+    <ng-container matColumnDef="creator">
+      <th *matHeaderCellDef class="table-column" mat-header-cell>
+        Creator
+      </th>
+      <td *matCellDef="let model" class="table-row" mat-cell>
+        {{ model.createdBy.fullName }}
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef class="table-column" mat-header-cell>
+        Actions
+      </th>
+      <td *matCellDef="let model; index as i" mat-cell>
+        <ng-container *ngIf="isCreator(model) | async">
+          <button id="delete-button-{{ i }}" mat-icon-button (click)="delete(model); $event.stopPropagation()">
+            <mat-icon class="mat-18">
+              delete
+            </mat-icon>
+          </button>
+          <button mat-icon-button [routerLink]="['./edit', model.id]" [state]="{ data: model }">
+            <mat-icon class="mat-18">
+              create
+            </mat-icon>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="(isCreator(model) | async) === false">
+          <ng-container *ngIf="model.canExecute">
+            <div class="badge badge-executable">
+              EXECUTABLE
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!model.canExecute">
+            <div class="badge">
+              VIEWABLE
+            </div>
+          </ng-container>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns; sticky: true" mat-header-row></tr>
+    <tr
+      [routerLink]="['./inspect', row.id]"
+      [state]="{ data: row }"
+      *matRowDef="let row; columns: displayedColumns"
+      mat-row
+      class="clickable"
+    ></tr>
+  </table>
+
+  <div class="spinner-container" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons> </mat-paginator>
+</div>

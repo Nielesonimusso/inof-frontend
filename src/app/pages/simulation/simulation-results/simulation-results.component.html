@@ -1,0 +1,99 @@
+<div class="simulation-result-container">
+  <h4 id="simulationExecutionId">Run #{{ executedSimulationIndex }}</h4>
+  <p class="p-ran-on" id="createdOn">Ran at {{ executedSimulation.createdOn | customDateTime }}</p>
+  <div class="flex">
+    <!-- left tile -->
+    <div class="simulation-result-run-tile-div" style="width: 500px; margin-right: 20px;">
+      <h4 class="tile-title-h4">Select a model</h4>
+      <div class="card-scrollable">
+        <div
+          *ngFor="let executedModel of executedSimulation.executedModels; index as i"
+          class="simulation-result-run-card"
+          [ngClass]="{ selected: selectedIndex == i }"
+          (click)="selectedIndex = i"
+        >
+          <div>
+            <p id="{{ 'cardName-' + i }}">{{ executedModel.model.name }}</p>
+          </div>
+          <div
+            id="{{ 'status-' + i }}"
+            class="icon-centering"
+            *ngIf="modelResultForModel(executedModel.model.id).status as modelStatus"
+          >
+            {{ modelStatus }}
+            <mat-icon
+              class="mat-18"
+              [ngClass]="{
+                'mat-icon-circle-green': modelStatus == 'success',
+                'mat-icon-circle-red': modelStatus == 'failed',
+                'mat-icon-circle-grey': modelStatus == 'submitted',
+                'mat-icon-circle-orange': modelStatus == 'running'
+              }"
+            >
+              fiber_manual_record
+            </mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- right tile -->
+    <div class="simulation-result-run-tile-div">
+      <div class="flex">
+        <h4 id="resultsName" class="tile-title-h4">
+          Results of Model: {{ executedSimulation.executedModels[selectedIndex].model.name }}
+        </h4>
+        <div class="buttons-right">
+          <button
+            mat-icon-button
+            (click)="changeView('table')"
+            matTooltip="Show as table"
+            matTooltipPosition="above"
+            class="result-run-button"
+            id="table-view-button"
+          >
+            <mat-icon class="mat-18">
+              table_chart
+            </mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            (click)="changeView('tree')"
+            matTooltip="Show as tree"
+            matTooltipPosition="above"
+            class="result-run-button"
+            id="tree-view-button"
+          >
+            <mat-icon class="mat-18">
+              account_tree
+            </mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            (click)="changeView('raw')"
+            matTooltip="Show as raw data"
+            matTooltipPosition="above"
+            class="result-run-button"
+            id="code-view-button"
+          >
+            <mat-icon class="mat-18">
+              code
+            </mat-icon>
+          </button>
+        </div>
+      </div>
+      <div id="code-view" *ngIf="resultsView === 'raw'" class="card-scrollable" style="background-color: #f2f2f2;">
+        <pre id="{{ 'modelResult-' + selectedIndex }}">{{ toPrettyJSONString(getResults()) }}</pre>
+      </div>
+      <app-simulation-results-viewer
+        id="tree-view"
+        *ngIf="resultsView === 'tree'"
+        [results]="getResults()"
+      ></app-simulation-results-viewer>
+      <app-simulation-results-table
+        id="table-view"
+        *ngIf="resultsView === 'table'"
+        [results]="getResults()"
+      ></app-simulation-results-table>
+    </div>
+  </div>
+</div>

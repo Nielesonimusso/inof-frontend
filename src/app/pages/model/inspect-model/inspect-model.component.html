@@ -1,0 +1,145 @@
+<div class="inspect-models-container">
+  <!-- Title Bar, containing title + Edit button-->
+  <div class="title-bar">
+    <div class="left">
+      <h2 class="title">
+        <span>Inspect model: </span>
+        <ng-template [ngIf]="model">{{ model.name }}</ng-template>
+      </h2>
+    </div>
+    <div class="right">
+      <a
+        *ngIf="model && (showEditButton() | async)"
+        [routerLink]="['../../edit', model.id]"
+        [state]="{ data: model }"
+        [fragment]="tabIndex"
+        mat-raised-button
+        color="primary"
+        class="edit-button"
+      >
+        EDIT
+      </a>
+    </div>
+  </div>
+  <!-- Declare the card -->
+  <mat-card class="card-full-width">
+    <div *ngIf="!model; then loading; else loaded"></div>
+    <ng-template #loading>
+      <mat-tab-group mat-stretch-tabs [(selectedIndex)]="tabIndex">
+        <!-- General Info tab-->
+        <mat-tab label="GENERAL INFO">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="5"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+        <mat-tab label="INPUT">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+        <mat-tab label="OUTPUT">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-template>
+    <ng-template #loaded>
+      <mat-tab-group mat-stretch-tabs mat-align-tabs="center" [(selectedIndex)]="tabIndex">
+        <!-- General Info tab-->
+        <mat-tab label="GENERAL INFO">
+          <mat-grid-list cols="2" rowHeight="350px">
+            <!-- General Information block -->
+            <mat-grid-tile class="tile-flex-start">
+              <div class="left-align">
+                <h3>General Information</h3>
+                <p id="description">{{ model.description }}</p>
+                <!-- Declare owner -->
+                <br />
+                <!-- Declare creator -->
+                <div id="creator">
+                  <span class="bold fixed-width-title">Created By: </span>
+                  <span>{{ model.createdBy.fullName }}</span>
+                </div>
+                <br />
+                <div id="owner">
+                  <span class="bold fixed-width-title">Owned by: </span>
+                  <span>{{ model.owner.name ? model.owner.name : '' }}</span>
+                </div>
+                <br />
+                <!-- Declare price -->
+                <div id="price">
+                  <span class="bold fixed-width-title">Price: </span>
+                  <span>{{ model.price + ' €/call' }}</span>
+                </div>
+              </div>
+            </mat-grid-tile>
+            <!-- Connection Details block -->
+            <mat-grid-tile class="tile-flex-start">
+              <div class="left-align">
+                <div id="modelPermissions" *ngIf="showPermissions() | async">
+                  <h3>Model Permissions</h3>
+                  <p *ngIf="selectedCompanies.length > 0; then permissions; else noPermissions"></p>
+                  <ng-template #permissions>
+                    The following companies are allowed to see/use your model:
+                  </ng-template>
+                  <ng-template #noPermissions>
+                    This model is not shared
+                  </ng-template>
+                  <div id="selected-companies">
+                    <div *ngFor="let selectedCompany of selectedCompanies; index as i" style="white-space: pre-line;">
+                      {{ '- ' + selectedCompany.name }}
+                    </div>
+                  </div>
+                </div>
+                <h3>Connection Details</h3>
+                <!-- Gateway URL
+                Set to a fixed width, and bold property name -->
+                <div id="gateway-url">
+                  <span class="bold fixed-width-title">Gateway URL: </span>
+                  <span class="fixed-width-value">{{ model.gatewayUrl }}</span>
+                  <!-- Copy Button -->
+                  <button
+                    id="copy-button"
+                    class="copy-button"
+                    mat-icon-button
+                    aria-label="Copy Gateway URL"
+                    (click)="copyText(model.gatewayUrl)"
+                  >
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                </div>
+                <br />
+                <!-- Status
+                Set to have a bold property name -->
+                <div id="status">
+                  <span class="bold">Status: </span>
+                  <span [className]="model.isConnected ? 'connected' : 'not_connected'">{{
+                    model.isConnected ? 'CONNECTED' : 'NOT CONNECTED'
+                  }}</span>
+                </div>
+              </div>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </mat-tab>
+        <!-- Inputs tab -->
+        <mat-tab label="INPUT">
+          <div class="tile no-margin-block">
+            <!-- Main header in tab -->
+            <h3>Inputs for the model</h3>
+            <!-- Use ModelParameterTableComponent. Bind to inputs array -->
+            <app-modelparameters-table class="table" [inputs]="model.inputDescriptions"></app-modelparameters-table>
+          </div>
+        </mat-tab>
+        <mat-tab label="OUTPUT">
+          <div class="tile no-margin-block">
+            <!-- Main header in tab -->
+            <h3>Outputs for the model</h3>
+            <!-- Use ModelParameterTableComponent. Bind to inputs array -->
+            <app-modelparameters-table class="table" [inputs]="model.outputDescriptions"></app-modelparameters-table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-template>
+  </mat-card>
+</div>

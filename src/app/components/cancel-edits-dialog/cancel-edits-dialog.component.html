@@ -1,0 +1,11 @@
+<mat-dialog-content class="mat-typography">
+  <p>
+    Are you sure you want to cancel editing?
+    <br />
+    You have unsaved changes.
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="Actions.CLOSE_DIALOG">NO</button>
+  <button mat-button color="warn" [mat-dialog-close]="Actions.NO_SAVE">YES</button>
+</mat-dialog-actions>

@@ -1,0 +1,35 @@
+stages:
+  - test
+  - build
+
+# Testing phase: lint code / static analysis
+test:nglint:
+  stage: test
+  image: trion/ng-cli
+  script:
+    - npm i
+    - ng lint
+
+# Testing phase: unit- and component tests
+test:karma:
+  stage: test
+  image: trion/ng-cli-karma
+  script:
+    - npm i
+    - ng test --code-coverage --progress false --watch=false
+  coverage: '/Lines \W+: (\d+\.\d+)%.*/' # Show code coverage (%) in pipeline view
+  artifacts:
+    paths:
+      - coverage/
+
+# Building phase: install dependencies and build project
+build:
+  stage: build
+  image: trion/ng-cli
+  script:
+    - npm i
+    - ng build --prod
+  artifacts:
+    paths:
+      - ./dist
+    expire_in: 10 weeks

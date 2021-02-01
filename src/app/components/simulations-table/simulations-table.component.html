@@ -1,0 +1,114 @@
+<div class="simulations-container">
+  <div class="page-header">
+    <div class="left">
+      <h2 class="title">{{ pageTitle }}</h2>
+    </div>
+    <div class="right">
+      <mat-form-field style="width: 200px; margin-right: 40px;" id="searchBar">
+        <mat-label>
+          Search Simulation
+        </mat-label>
+        <mat-icon class="mat-icon-fix-lineheight" matSuffix>
+          search
+        </mat-icon>
+        <input (keyup)="applyFilter($event.target.value)" matInput type="search" />
+      </mat-form-field>
+      <button class="edit-button" color="primary" mat-raised-button routerLink="/my-simulations/add">
+        ADD SIMULATION
+      </button>
+    </div>
+  </div>
+
+  <table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc" class="simulations-table-container table-transparant-header" mat-table>
+    <!-- name Column -->
+    <ng-container matColumnDef="name">
+      <th *matHeaderCellDef class="table-column simulation-name-column" mat-header-cell>
+        Name
+      </th>
+      <td *matCellDef="let element" class="table-row" mat-cell>
+        {{ element.name }}
+      </td>
+    </ng-container>
+
+    <!-- companyCode Column -->
+    <ng-container matColumnDef="owner">
+      <th *matHeaderCellDef class="table-column code-and-dosage-columns" mat-header-cell>
+        Owner
+      </th>
+      <td *matCellDef="let element" class="table-row" mat-cell>
+        {{ element.owner.name }}
+      </td>
+    </ng-container>
+
+    <!-- standardCode Column -->
+    <ng-container matColumnDef="foodproductname">
+      <th *matHeaderCellDef class="table-column code-and-dosage-columns" mat-header-cell>
+        Food Product
+      </th>
+      <td *matCellDef="let element" class="table-row" mat-cell>
+        {{ element.foodProduct.name }}
+      </td>
+    </ng-container>
+
+    <!-- dosage Column -->
+    <ng-container matColumnDef="createdby">
+      <th *matHeaderCellDef class="table-column code-and-dosage-columns" mat-header-cell>
+        Created By
+      </th>
+      <td *matCellDef="let element" class="table-row" mat-cell>
+        {{ element.createdBy.fullName }}
+      </td>
+    </ng-container>
+
+    <!-- Actions (i.e. isCreator) Column -->
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef class="table-column" mat-header-cell>
+        Actions
+      </th>
+      <td *matCellDef="let element; index as i" mat-cell>
+        <ng-container>
+          <ng-template [ngIf]="isCreator(element) | async">
+            <button
+              id="delete-button-{{ i }}"
+              mat-icon-button
+              (click)="deleteSimulation(element); $event.stopPropagation()"
+            >
+              <mat-icon class="mat-18">
+                delete
+              </mat-icon>
+            </button>
+            <button mat-icon-button [routerLink]="['./edit', element.id]" [state]="{ data: element }">
+              <mat-icon class="mat-18">
+                create
+              </mat-icon>
+            </button>
+          </ng-template>
+          <button
+            id="run-button-{{ i }}"
+            mat-icon-button
+            (click)="runSimulationById(element); $event.stopPropagation()"
+          >
+            <mat-icon class="mat-18">
+              play_arrow
+            </mat-icon>
+          </button>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns; sticky: true" mat-header-row></tr>
+    <tr
+      [routerLink]="['inspect', row.id]"
+      [state]="row"
+      *matRowDef="let row; columns: displayedColumns"
+      mat-row
+      class="clickable"
+    ></tr>
+  </table>
+
+  <div class="spinner-container" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons> </mat-paginator>
+</div>

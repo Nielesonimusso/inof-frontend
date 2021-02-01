@@ -1,0 +1,66 @@
+.add-edit-model-container {
+  margin-top: 50px;
+  min-width: 450px;
+  max-width: 1400px;
+
+  .card-full-width {
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    /* max-height: ; */
+  }
+
+  .add-edit-model-header {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .add-edit-model-header-row {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+
+  .add-edit-model-bottom-align{
+    margin-left: 20px;
+    margin-top: 250px;
+    margin-right: auto;
+    width: 100%;
+  }
+
+  .width-100 {
+    width: 100%;
+  }
+
+  .width-50 {
+    width: 50%;
+  }
+
+  .tabs {
+    width: 100%;
+    background: white;
+    max-width: 100%;
+  }
+
+  .general-info-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  mat-form-field {
+    width: 60%;
+  }
+
+  .left-align {
+    margin-left: 20px;
+    margin-right: auto;
+    width: 100%;
+  }
+
+  mat-checkbox {
+    margin-right: 10px;
+  }
+}
+

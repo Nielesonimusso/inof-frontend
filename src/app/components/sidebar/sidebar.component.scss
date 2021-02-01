@@ -1,0 +1,57 @@
+/* Style for the side panel container */
+.sidenav-container {
+  height: 100%;
+  width: 232px;
+}
+
+/* Style for the side panel */
+.sidenav {
+  position: fixed;
+  height: 100%;
+  width: 232px;
+  background-color: #344150;
+  padding: 20px 0px 50px;
+
+  /* Make sure top and bottom part of the sidenav are at their desired positions */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Styles for growing content from top and bottom */
+.top-container,
+.bottom-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+/* Set padding for the logo */
+.sidenav div.logo {
+  padding: 0 16px;
+
+  a.logo {
+    display: block;
+  }
+}
+
+/* All the links in the sidenav, which are not a logo,
+* are tabs of the side panel
+*/
+.sidenav a:not(.logo) {
+  padding: 12px 16px;
+  width: 100%;
+  text-decoration: none;
+  font-size: 14px;
+  color: white;
+
+  cursor: pointer;
+
+  /* Set hover and active styles of the links in the side panel */
+  &.active {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}

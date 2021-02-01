@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Apple",
+    "companyCode": "12345",
+    "standardCode": "98765"
+  },
+  {
+    "name": "Banana",
+    "companyCode": "23456",
+    "standardCode": "98765"
+  },
+  {
+    "name": "Cinnamon",
+    "companyCode": "34567",
+    "standardCode": "98765"
+  },
+  {
+    "name": "Apple2",
+    "companyCode": "123452",
+    "standardCode": "987652"
+  },
+  {
+    "name": "Banana2",
+    "companyCode": "234562",
+    "standardCode": "987652"
+  },
+  {
+    "name": "Cinnamon2",
+    "companyCode": "345672",
+    "standardCode": "987652"
+  },
+  {
+    "name": "Apple3",
+    "companyCode": "123453",
+    "standardCode": "987653"
+  },
+  {
+    "name": "Banana3",
+    "companyCode": "234563",
+    "standardCode": "987653"
+  },
+  {
+    "name": "Cinnamon3",
+    "companyCode": "345673",
+    "standardCode": "987653"
+  }
+]

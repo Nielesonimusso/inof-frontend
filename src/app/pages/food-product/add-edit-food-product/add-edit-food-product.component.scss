@@ -1,0 +1,131 @@
+.add-edit-food-product-container {
+  margin-top: 50px;
+  min-width: 450px;
+  max-width: 1400px;
+
+  .mat-form-field {
+    margin-left: 8px;
+  }
+
+  .card-full-width {
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    /* max-height: ; */
+  }
+
+  table {
+    table-layout: fixed;
+  }
+
+  .left-align {
+    margin-left: 20px;
+    margin-right: auto;
+    width: 100%;
+  }
+
+  .summary-table-full-width {
+    width: 100%;
+    padding-left: 8px;
+  }
+
+  .add-edit-food-product-page-header {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .add-edit-food-product-header-row {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .tabs {
+    width: 100%;
+    background: white;
+    max-width: 100%;
+  }
+
+  td {
+    word-wrap: break-word;
+  }
+
+  .summary-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  mat-form-field {
+    width: 50%;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .mat-icon {
+    cursor: pointer;
+  }
+
+  .process-steps-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .mat-card-tabs-content {
+    width: 1000px;
+    margin-left: 10px;
+    margin-bottom: 5px
+  }
+
+  .mat-card-tabs-packaging {
+    width: calc(100% - 10px);
+    margin-left: 5px;
+    margin-bottom: 10px
+  }
+
+
+  .process-steps-width {
+    width: 350px;
+    max-width: 1000px;
+  }
+
+  .process-steps-properties-indent {
+    padding-left: 75px;
+  }
+
+  .overflow-auto {
+    overflow: auto;
+    max-height: 400px;
+  }
+}
+
+.mat-col-name {
+  width: 35%;
+}
+
+.mat-col-company-code {
+  width: 10%;
+}
+
+.mat-col-standard-code {
+  width: 10%;
+}
+
+.mat-col-amount {
+  width: 15%;
+}
+
+.mat-col-unit {
+  width: 15%;
+}
+
+.width-50 {
+  width: 50px;
+}
+
+.mat-col-delete {
+  width: 5%;
+}

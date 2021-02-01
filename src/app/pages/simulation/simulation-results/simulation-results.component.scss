@@ -1,0 +1,144 @@
+.simulation-result-container {
+  margin-top: 50px;
+  min-width: 450px;
+  max-width: 100%;
+
+  .simulation-result-header {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .simulation-result-header-row {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .simulation-result-left-align {
+    margin-left: 20px;
+    margin-right: auto;
+  }
+
+  .simulation-result-margins {
+    margin: 0 20px 20px 20px;
+  }
+
+  // The buttons on the top right of the mat card
+  .simulation-result-buttons {
+    margin-left: auto;
+  }
+
+  // Make the edit button transparent
+  .edit-button-transparent {
+    margin-right: 10px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+  }
+
+  // Remove the margin in the page title
+  .simulation-result-product-h2 {
+    margin: 0;
+  }
+
+  p {
+    margin: 3px;
+    padding: 0;
+  }
+
+  // Remove the left margin of the p under the run number (i.e. Ran at 13:00 22/4/2020)
+  .p-ran-on {
+    margin-left: 0;
+  }
+
+  h4 {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  // The title above each tile
+  .tile-title-h4 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+  }
+
+  // The styling for the card itself
+  .simulation-result-run-card {
+    border: 1px solid grey;
+    width: 100%;
+    height: 75px;
+    overflow: hidden;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    flex-basis: 300px;
+    justify-content: space-between;
+    cursor: pointer;
+
+    &.selected {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  // Both the left and the right container on the run tab
+  .simulation-result-run-tile-div {
+    width: 100%;
+    height: 100%;
+  }
+
+  // Put the cards in another div to make them scrollable without the title being scrollable
+  .card-scrollable {
+    width: 100%;
+    height: 450px;
+    overflow-y: auto;
+  }
+
+  // The green circle in the card
+  .mat-icon-circle-green {
+    margin-left: auto;
+    color: #1ab11e;
+  }
+
+  // The red circle in the card
+  .mat-icon-circle-red {
+    margin-left: auto;
+    color: red;
+  }
+
+  // The orange circle in the card
+  .mat-icon-circle-orange {
+    margin-left: auto;
+    color: #fc9403;
+  }
+
+  // The grey circle in the card
+  .mat-icon-circle-grey {
+    margin-left: auto;
+    color: #5d5d5d;
+  }
+
+  // To make the two icons above the right tile on the right hand side
+  .mat-icon-right {
+    margin-left: auto;
+  }
+
+  .result-run-button {
+    margin-top: 16px;
+  }
+
+  .buttons-right {
+    float: right;
+    margin: auto;
+    margin-right: 20px;
+  }
+
+  // To center the green/red circle in the card
+  .icon-centering {
+    display: flex;
+    align-items: center;
+  }
+}

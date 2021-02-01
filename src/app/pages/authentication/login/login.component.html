@@ -1,0 +1,43 @@
+<div class="login-page">
+  <div class="title">Internet of Food</div>
+  <div class="form-container mat-elevation-z4">
+    <form #ngForm="ngForm" (ngSubmit)="ngForm.form.valid && login()">
+      <div class="login-container">
+        <mat-error *ngIf="wrongPasswordEntered">
+          The given username or password was incorrect.
+        </mat-error>
+        <mat-form-field appearance="none">
+          <mat-label for="username">Username</mat-label>
+          <input matInput [(ngModel)]="model.username" id="username" autocomplete="off" name="username" required />
+        </mat-form-field>
+        <mat-form-field appearance="none">
+          <mat-label for="password">Password</mat-label>
+          <input
+            matInput
+            [(ngModel)]="model.password"
+            id="password"
+            type="password"
+            autocomplete="off"
+            name="password"
+            required
+          />
+        </mat-form-field>
+        <div class="forgot-password-container">
+          <a class="forgot-password" routerLink="/forgot-password">Forgot Password?</a>
+        </div>
+      </div>
+      <div class="buttons-container">
+        <app-loading-button
+          class="login-button"
+          mat-raised-button
+          color="primary"
+          (click)="ngForm.onSubmit($event)"
+          [disabled]="ngForm.form.invalid && ngForm.submitted"
+        >
+          Login
+        </app-loading-button>
+        <button class="register-button" mat-stroked-button routerLink="/register">Register</button>
+      </div>
+    </form>
+  </div>
+</div>

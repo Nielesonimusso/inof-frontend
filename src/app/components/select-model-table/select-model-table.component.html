@@ -1,0 +1,55 @@
+<div class="select-model-table-container">
+  <mat-form-field class="search" id="searchBar">
+    <mat-label>
+      Search Model
+    </mat-label>
+    <mat-icon class="mat-icon-fix-lineheight" matSuffix>
+      search
+    </mat-icon>
+    <input (keyup)="applyFilter($event.target.value)" matInput type="search" />
+  </mat-form-field>
+  <div class="full-width">
+    <div class="overflow-auto">
+      <table mat-table [dataSource]="dataSource" id="table">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="mat-col-name"
+            [ngClass]="element.isConnected ? 'connected' : 'not-connected'"
+          >
+            {{ element.name }}
+          </td>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element" class="mat-col-description">
+            {{ element.description.substring(0, 35) }}<span *ngIf="element.description.length > 35">...</span>
+          </td>
+        </ng-container>
+
+        <!--Price Column -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element" class="mat-col-price">{{ element.price }} €/call</td>
+        </ng-container>
+
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell class="mat-col-select" *matCellDef="let element; index as i">
+            <button id="td-add-model-{{ i }}" mat-stroked-button color="primary" (click)="addItem(element)">
+              Select
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </div>
+</div>

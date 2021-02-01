@@ -1,0 +1,119 @@
+<div class="profile-page profile-container">
+  <div class="profile-header">
+    <h2>Your Profile</h2>
+  </div>
+  <mat-card class="mat-elevation-z4">
+    <div class="flex">
+      <div class="profile-tile">
+        <div *ngIf="!userProfile; then loading; else loaded"></div>
+        <ng-template #loading>
+          <ngx-skeleton-loader count="6"></ngx-skeleton-loader>
+        </ng-template>
+        <ng-template #loaded>
+          <form #ngProfileForm="ngForm" (ngSubmit)="ngProfileForm.form.valid && saveProfile()">
+            <h4 class="profile-tile-title">General Information</h4>
+            <mat-form-field appearance="none">
+              <mat-label>Full Name</mat-label>
+              <input id="full-name" name="fullName" matInput [(ngModel)]="userProfile.fullName" appTrim required />
+            </mat-form-field>
+            <div class="company-header">
+              <h5>Company</h5>
+              <p>
+                <span id="company-name">{{ userProfile.company.name }}</span>
+                <br />
+                <span id="company-address">{{ userProfile.company.address }}</span>
+              </p>
+            </div>
+            <mat-form-field appearance="none">
+              <mat-label>Email</mat-label>
+              <input id="email" name="email" matInput [(ngModel)]="userProfile.email" #ngEmail="ngModel" email />
+              <mat-error *ngIf="ngEmail.invalid && ngEmail.errors.email">Email is invalid.</mat-error>
+              <mat-error *ngIf="ngEmail.invalid && ngEmail.errors.alreadyInUse">Email is already in use.</mat-error>
+            </mat-form-field>
+            <br />
+            <app-loading-button
+              #saveButton
+              id="save"
+              class="align-bottom"
+              mat-raised-button
+              color="primary"
+              (click)="ngProfileForm.onSubmit($event)"
+              [disabled]="ngProfileForm.form.invalid && ngProfileForm.submitted"
+            >
+              SAVE
+            </app-loading-button>
+          </form>
+        </ng-template>
+      </div>
+      <div class="profile-tile">
+        <h4 class="profile-tile-title">Change Password</h4>
+        <form
+          #ngForm="ngForm"
+          (ngSubmit)="ngForm.form.valid && changePassword()"
+          [appMustMatch]="['new-password', 'new-password-repeat']"
+        >
+          <mat-form-field appearance="none">
+            <mat-label>Current Password</mat-label>
+            <input
+              id="current-password"
+              name="current-password"
+              type="password"
+              autocomplete="new-password"
+              matInput
+              [(ngModel)]="currentPassword"
+              #ngCurrentPassword="ngModel"
+              required
+            />
+            <mat-error *ngIf="ngCurrentPassword.invalid && ngCurrentPassword.errors.wrongPassword"
+              >Password is wrong.</mat-error
+            >
+          </mat-form-field>
+          <br />
+          <mat-form-field appearance="none">
+            <mat-label>New Password</mat-label>
+            <input
+              id="new-password"
+              name="new-password"
+              type="password"
+              matInput
+              [(ngModel)]="newPassword"
+              #ngNewPassword="ngModel"
+              minlength="6"
+            />
+            <mat-error *ngIf="ngNewPassword.invalid && ngNewPassword.errors.minlength"
+              >Password must be at least 6 characters long.</mat-error
+            >
+          </mat-form-field>
+          <br />
+          <mat-form-field appearance="none">
+            <mat-label>New Password (Repeat)</mat-label>
+            <input
+              id="new-password-repeat"
+              name="new-password-repeat"
+              type="password"
+              matInput
+              [(ngModel)]="newPasswordRepeat"
+              #ngNewPasswordRepeat="ngModel"
+              required
+            />
+            <mat-error *ngIf="ngNewPasswordRepeat.invalid && ngNewPasswordRepeat.errors.mustMatch"
+              >The specified passwords do not match.</mat-error
+            >
+          </mat-form-field>
+          <br />
+          <app-loading-button
+            #changePasswordButton
+            [disabled]="!ngForm.form.valid || !userProfile"
+            id="change-password"
+            mat-raised-button
+            color="primary"
+            (click)="ngForm.onSubmit($event)"
+            [disabled]="ngForm.form.invalid"
+          >
+            CHANGE PASSWORD
+          </app-loading-button>
+        </form>
+      </div>
+    </div>
+  </mat-card>
+</div>

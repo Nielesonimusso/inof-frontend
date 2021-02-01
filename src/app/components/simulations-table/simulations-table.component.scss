@@ -1,0 +1,44 @@
+.simulations-container {
+  width: 100%;
+
+  .clickable {
+    cursor: pointer;
+  }
+
+  .simulations-table-container {
+    width: 100%;
+  }
+
+  .simulation-name-column {
+    width: 40%;
+  }
+
+  .code-and-dosage-columns {
+    width: 14%;
+  }
+
+  .title {
+    margin: 0;
+    display: inline-block;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .table-row {
+    font-size: 14px;
+    max-width: 120px;
+    padding: 8px 4px;
+    word-wrap: break-word;
+  }
+
+  .table-column {
+    font-size: 12px;
+  }
+}
+
+// TODO this CSS is the same as the CSS of food-product-table.component.scss, so find a way to reuse that.

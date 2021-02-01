@@ -1,0 +1,31 @@
+<div class="sidenav-container">
+  <!-- Left navigation sidebar, contains all links to pages -->
+  <div class="sidenav">
+    <!-- Container for growing content from top -->
+    <div class="top-container">
+      <div class="logo">
+        <!-- Clicking on the logo must result in a redirect to the page of the first route. -->
+        <a class="logo" [routerLink]="topRoutes[0] ? '/' + topRoutes[0].path : ''" routerLinkActive="active">
+          <img src="assets/img/logo.png" alt="Internet Of Food" />
+        </a>
+      </div>
+
+      <!-- For each route in the topRoutes array, set the router link, and the route name. -->
+      <a class="top-aligned" *ngFor="let route of topRoutes" routerLink="/{{ route.path }}" routerLinkActive="active">{{
+        route.data.name
+      }}</a>
+    </div>
+
+    <!-- Container for growing content from bottom -->
+    <div class="bottom-container">
+      <!-- For each route in the bottomRoutes array, set the router link, and the route name. -->
+      <a
+        class="bottom-aligned"
+        *ngFor="let route of bottomRoutes"
+        routerLink="/{{ route.path }}"
+        routerLinkActive="active"
+        >{{ route.data.name }}</a
+      >
+    </div>
+  </div>
+</div>

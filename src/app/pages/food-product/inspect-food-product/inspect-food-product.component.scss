@@ -1,0 +1,48 @@
+.inspect-food-product-container {
+  margin-top: 50px;
+  min-width: 450px;
+  max-width: 1400px;
+
+  .inspect-food-product-header {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .inspect-food-product-header-row {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .inspect-food-product-left-align {
+    margin-left: 20px;
+    margin-right: auto;
+  }
+
+  .inspect-food-product-edit-button {
+    margin-left: auto;
+  }
+
+  .inspect-food-product-h2 {
+    margin: 0;
+  }
+
+  .mat-table {
+    width: 100%;
+  }
+
+  p {
+    margin: 3px;
+    padding: 0;
+  }
+
+  h4 {
+    margin-bottom: 0;
+  }
+
+  .company-permission {
+    margin-right: 20px;
+    margin-left: auto;
+    width: 50%;
+  }
+}

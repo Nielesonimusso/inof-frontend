@@ -1,0 +1,239 @@
+<div class="inspect-food-product-container">
+  <div class="inspect-food-product-header">
+    <div class="inspect-food-product-header-row">
+      <h2 class="inspect-food-product-h2">
+        Inspecting Food Product: <ng-template [ngIf]="foodProduct">{{ foodProduct.name }}</ng-template>
+      </h2>
+      <a
+        *ngIf="foodProduct && (showEditButton() | async)"
+        class="inspect-food-product-edit-button"
+        mat-raised-button
+        color="primary"
+        [routerLink]="['../../edit', foodProduct.id]"
+        [state]="{ data: foodProduct }"
+        [fragment]="tabIndex"
+      >
+        EDIT
+      </a>
+    </div>
+  </div>
+  <mat-card>
+    <div *ngIf="!foodProduct; then loading; else loaded"></div>
+    <ng-template #loading>
+      <mat-tab-group mat-stretch-tabs [(selectedIndex)]="tabIndex">
+        <mat-tab label="SUMMARY">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="5"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+        <mat-tab label="INGREDIENTS">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+        <mat-tab label="PROCESSING">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+        <mat-tab label="PROPERTIES">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+        <mat-tab label="PACKAGING">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-template>
+    <ng-template #loaded>
+      <mat-tab-group mat-stretch-tabs [(selectedIndex)]="tabIndex">
+        <!-- Summary tab -->
+        <mat-tab label="SUMMARY">
+          <div style="display: flex;">
+            <div class="inspect-food-product-left-align">
+              <h4 style="width: 40%">Summary</h4>
+              <table>
+                <tr>
+                  <td>Name:</td>
+                  <td>{{ foodProduct.name }}</td>
+                </tr>
+                <tr>
+                  <td style="padding-right: 20px;">Company Code:</td>
+                  <td>{{ foodProduct.companyCode }}</td>
+                </tr>
+                <tr>
+                  <td>Standard Code:</td>
+                  <td>{{ foodProduct.standardCode }}</td>
+                </tr>
+                <tr>
+                  <td>Dosage:</td>
+                  <td>{{ foodProduct.dosage }} {{ foodProduct.dosageUnit }}</td>
+                </tr>
+              </table>
+              <h4>Created By:</h4>
+              <p>
+                {{ foodProduct.createdBy.fullName }}
+              </p>
+
+              <h4>Owned By:</h4>
+              <p>
+                {{ foodProduct.owner.name }}
+              </p>
+            </div>
+
+            <div class="company-permission" *ngIf="showPermissions() | async">
+              <h4>Permissions</h4>
+              <p *ngIf="selectedCompanies.length > 0; then permissions; else noPermissions"></p>
+              <ng-template #permissions>
+                The following companies are allowed to see your food product:
+              </ng-template>
+              <ng-template #noPermissions>
+                This food product is not shared
+              </ng-template>
+              <div id="selected-companies">
+                <div *ngFor="let selectedCompany of selectedCompanies; index as i" style="white-space: pre-line;">
+                  {{ '- ' + selectedCompany.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Ingredients tab -->
+        <mat-tab label="INGREDIENTS">
+          <div class="inspect-food-product-left-align">
+            <h4>Ingredients</h4>
+            <!-- Packaging tab table -->
+            <table mat-table [dataSource]="foodProduct.ingredients">
+              <!-- name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+              <!-- Company Code Column -->
+              <ng-container matColumnDef="companyCode">
+                <th mat-header-cell *matHeaderCellDef>Company Code</th>
+                <td mat-cell *matCellDef="let element">{{ element.companyCode }}</td>
+              </ng-container>
+              <!-- Standard Code Column -->
+              <ng-container matColumnDef="standardCode">
+                <th mat-header-cell *matHeaderCellDef>Standard Code</th>
+                <td mat-cell *matCellDef="let element">{{ element.standardCode }}</td>
+              </ng-container>
+              <!-- amount Column -->
+              <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef>Amount</th>
+                <td mat-cell *matCellDef="let element">{{ element.amount }} {{ element.amountUnit }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsIngredients"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsIngredients"></tr>
+            </table>
+          </div>
+        </mat-tab>
+
+        <!-- Processing tab -->
+        <mat-tab label="PROCESSING">
+          <div class="inspect-food-product-left-align">
+            <h4>Processing</h4>
+            <!-- Packaging tab table -->
+            <table mat-table [dataSource]="foodProduct.processingSteps">
+              <!-- name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+              <!-- Equipment Column -->
+              <ng-container matColumnDef="equipment">
+                <th mat-header-cell *matHeaderCellDef>Equipment</th>
+                <td mat-cell *matCellDef="let element">{{ element.equipment }}</td>
+              </ng-container>
+              <!-- Property Column -->
+              <ng-container matColumnDef="property">
+                <th mat-header-cell *matHeaderCellDef>Property</th>
+                <td mat-cell *matCellDef="let element">
+                  <div *ngFor="let property of element.properties">{{ property.name }}</div>
+                </td>
+              </ng-container>
+              <!-- value Column -->
+              <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef>Value</th>
+                <td mat-cell *matCellDef="let element">
+                  <div *ngFor="let property of element.properties">{{ property.value }} {{ property.unit }}</div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsProcessing"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsProcessing"></tr>
+            </table>
+          </div>
+        </mat-tab>
+
+        <!-- Properties tab -->
+        <mat-tab label="PROPERTIES">
+          <div class="inspect-food-product-left-align">
+            <h4>Properties</h4>
+            <!-- Packaging tab table -->
+            <table mat-table [dataSource]="foodProduct.foodProductProperties">
+              <!-- name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+              <!-- value Column -->
+              <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef>Value</th>
+                <td mat-cell *matCellDef="let element">{{ element.value }} {{ element.unit }}</td>
+              </ng-container>
+              <!-- method Column -->
+              <ng-container matColumnDef="method">
+                <th mat-header-cell *matHeaderCellDef>Method</th>
+                <td mat-cell *matCellDef="let element">{{ element.method }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsProperties"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsProperties"></tr>
+            </table>
+          </div>
+        </mat-tab>
+
+        <!-- Packaging tab -->
+        <mat-tab label="PACKAGING">
+          <div class="inspect-food-product-left-align">
+            <h4>Packaging</h4>
+            <!-- Packaging tab table -->
+            <table mat-table [dataSource]="foodProduct.packagings">
+              <!-- name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+              <!-- Company Code Column -->
+              <ng-container matColumnDef="companyCode">
+                <th mat-header-cell *matHeaderCellDef>Company Code</th>
+                <td mat-cell *matCellDef="let element">{{ element.companyCode }}</td>
+              </ng-container>
+              <!-- Standard Code Column -->
+              <ng-container matColumnDef="standardCode">
+                <th mat-header-cell *matHeaderCellDef>Standard Code</th>
+                <td mat-cell *matCellDef="let element">{{ element.standardCode }}</td>
+              </ng-container>
+              <!-- shape Column -->
+              <ng-container matColumnDef="shape">
+                <th mat-header-cell *matHeaderCellDef>Shape</th>
+                <td mat-cell *matCellDef="let element">{{ element.shape }}</td>
+              </ng-container>
+              <!-- thickness Column -->
+              <ng-container matColumnDef="thickness">
+                <th mat-header-cell *matHeaderCellDef>Thickness</th>
+                <td mat-cell *matCellDef="let element">{{ element.thickness }} {{ element.thicknessUnit }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsPackaging"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsPackaging"></tr>
+            </table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-template>
+  </mat-card>
+</div>

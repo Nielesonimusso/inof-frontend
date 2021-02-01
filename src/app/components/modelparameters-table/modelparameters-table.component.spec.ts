@@ -1,0 +1,163 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HarnessLoader, ComponentHarness, TestElement } from '@angular/cdk/testing';
+import { MatTableHarness } from '@angular/material/table/testing';
+import { Type } from '@angular/core';
+
+import { ModelParameterTableComponent } from './modelparameters-table.component';
+import { ModelParameter, ModelParameterLabel } from '../../models';
+import { MatTableModule } from '@angular/material/table';
+import { TestbedHarnessEnvironment, UnitTestElement } from '@angular/cdk/testing/testbed';
+
+/**
+ * The Page helper class gives easy access to parts of the page relevant to testing such as input fields or buttons.
+ * https://angular.io/guide/testing#use-a-page-object
+ */
+class Page {
+  get table() {
+    return this.queryHarness(MatTableHarness, '.mat-table');
+  }
+
+  constructor(private loader: HarnessLoader) {}
+
+  /**
+   * Helper method to shorten the getters, this gets the Angular Material Harness with type (T) based on the selector
+   * https://material.angular.io/guide/using-component-harnesses
+   */
+  private queryHarness<T extends ComponentHarness>(t: Type<T>, selector: string): Promise<T> {
+    // @ts-ignore
+    return this.loader.getHarness(t.with({ selector }));
+  }
+}
+
+describe('ModelParameterTableComponent', () => {
+  let component: ModelParameterTableComponent;
+  let fixture: ComponentFixture<ModelParameterTableComponent>;
+  let loader: HarnessLoader;
+  let page: Page;
+
+  /**
+   * Constructs an unique description object
+   * @param id unique id for the unique object
+   * @param languages amount of languages to add to the description object
+   */
+  const constructUniqueObject = (id: string, languages: number = 1): ModelParameter => {
+    const labels: ModelParameterLabel[] = [];
+    // Construct labels array, for each language an entry
+    for (let l = 0; l < languages; l++) {
+      labels.push({
+        name: `label${l}_${id}`,
+        language: `language${l}_${id}`,
+      } as ModelParameterLabel);
+    }
+    // Return unique object
+    return {
+      labels,
+      unit: `unit${id}`,
+      description: `description${id}`,
+    } as ModelParameter;
+  };
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      imports: [MatTableModule],
+      declarations: [ModelParameterTableComponent],
+    });
+
+    fixture = TestBed.createComponent(ModelParameterTableComponent);
+    component = fixture.componentInstance;
+    loader = TestbedHarnessEnvironment.loader(fixture);
+    page = new Page(loader);
+  });
+
+  it('should create', async () => {
+    expect(component).toBeTruthy();
+    const table = await page.table;
+    expect(table).toBeTruthy();
+  });
+
+  it('should display labels multiline', async () => {
+    const labelCount = 3;
+    const object = constructUniqueObject('AAA', labelCount);
+
+    // Set the inputs value
+    component.inputs = [object];
+    // Check for changes
+    fixture.detectChanges();
+
+    // Get table, rows
+    const table = await page.table;
+    const rows = await table.getRows();
+    // Assert rows to be the same length as input
+    expect(rows.length).toBe(1, 'expect rows to be of same length as input');
+    const row = rows[0];
+
+    const labelCell = (await row.getCells())[0];
+    const labelElement: UnitTestElement = (await labelCell.host()) as UnitTestElement;
+    const children = labelElement.element.children;
+    expect(children.length).toBe(labelCount, 'expects amount of elements in a labelCell to be the amount of languages');
+
+    object.labels.forEach((value, idx) => {
+      expect(children[idx].textContent).toBe(`${value.name} (${value.language})`);
+    });
+  });
+
+  it('should display all columns', async () => {
+    // Set displayed columns
+    component.displayedColumns = ['labels', 'unit', 'description'];
+
+    fixture.detectChanges();
+
+    // Get header rows
+    const table = await page.table;
+    const headerRows = await table.getHeaderRows();
+    expect(headerRows.length).toBe(1, 'expects one header row');
+
+    const expectedColumnNames: string[] = ['Labels', 'Unit', 'Description'];
+
+    // Get text of first header row
+    const text = await headerRows[0].getCellTextByIndex();
+    // Check if it matches the expected columns count
+    expect(text.length).toBe(expectedColumnNames.length, 'expects header to have same amount of columns');
+    // For each column, check if it matches the expected value
+    text.forEach((value, idx) => {
+      expect(value).toBe(expectedColumnNames[idx], 'expects column names to match expected value');
+    });
+  });
+
+  it('should display all rows correctly', async () => {
+    const object1 = constructUniqueObject('AAA', 1);
+    const object2 = constructUniqueObject('BBB', 1);
+
+    // Set the inputs value
+    component.inputs = [object1, object2];
+    // Check for changes
+    fixture.detectChanges();
+
+    // Get table, rows
+    const table = await page.table;
+    const rows = await table.getRows();
+    // Assert rows to be the same length as input
+    expect(rows.length).toBe(2, 'expect rows to be of same length as input');
+
+    // For each row, check if row matches expectations
+    for (let i = 0; i < rows.length; i++) {
+      const expectedObject = i === 0 ? object1 : object2;
+      const text = await rows[i].getCellTextByIndex();
+
+      expect(text.length).toBe(3, 'expects 3 columns');
+
+      expectedObject.labels.forEach((label) => {
+        expect(text[0]).toContain(
+          `${label.name} (${label.language})`,
+          'expects label column to contain all labels for all languages'
+        );
+      });
+
+      // Check if the unit is correctly shown
+      expect(text[1]).toBe(expectedObject.unit, 'expects unit column to be correctly shown');
+
+      // Check if the description is correctly shown
+      expect(text[2]).toBe(expectedObject.description, 'expects description column to be correctly shown');
+    }
+  });
+});

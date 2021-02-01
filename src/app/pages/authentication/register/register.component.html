@@ -1,0 +1,103 @@
+<div class="register-page">
+  <div class="title">Internet of Food</div>
+  <div class="form-container mat-elevation-z4">
+    <form
+      #ngForm="ngForm"
+      (ngSubmit)="ngForm.form.valid && register()"
+      [appMustMatch]="['password', 'repeatedPassword']"
+    >
+      <div class="register-container">
+        <div ngModelGroup="reason" #ngReason="ngModelGroup">
+          <mat-error *ngIf="ngReason.errors && ngReason.errors.server">
+            {{ ngReason.errors.server }}
+          </mat-error>
+        </div>
+
+        <mat-form-field appearance="none">
+          <mat-label for="username">Username</mat-label>
+          <input
+            matInput
+            [(ngModel)]="model.username"
+            (ngModelChange)="clearServerError()"
+            id="username"
+            name="username"
+            appTrim
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="none">
+          <mat-label for="fullname">Full Name</mat-label>
+          <input matInput [(ngModel)]="model.fullName" id="fullname" name="fullname" appTrim required />
+        </mat-form-field>
+
+        <mat-form-field appearance="none">
+          <mat-label for="email">Email</mat-label>
+          <input
+            matInput
+            [(ngModel)]="model.email"
+            #ngEmail="ngModel"
+            (ngModelChange)="clearServerError()"
+            id="email"
+            name="email"
+            email
+            required
+          />
+          <mat-error *ngIf="ngEmail.invalid && ngEmail.errors.email">Email is invalid.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="none">
+          <mat-label for="company">Company</mat-label>
+          <mat-select disableRipple [(ngModel)]="model.companyId" id="company" name="company" required>
+            <mat-option [value]="company.id" *ngFor="let company of companies">{{ company.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="none">
+          <mat-label for="password">Password</mat-label>
+          <input
+            matInput
+            [(ngModel)]="model.password"
+            #ngPassword="ngModel"
+            id="password"
+            type="password"
+            name="password"
+            minlength="6"
+            required
+          />
+          <mat-error *ngIf="ngPassword.invalid && ngPassword.errors.minlength"
+            >Password must be at least 6 characters long.</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="none">
+          <mat-label for="repeatedPassword">Password (Repeat)</mat-label>
+          <input
+            matInput
+            [(ngModel)]="repeatedPassword"
+            #ngRepeatedPassword="ngModel"
+            id="repeatedPassword"
+            type="password"
+            name="repeatedPassword"
+            required
+          />
+          <mat-error *ngIf="ngRepeatedPassword.invalid && ngRepeatedPassword.errors.mustMatch"
+            >The specified passwords do not match.</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="buttons-container">
+        <app-loading-button
+          class="register-button"
+          color="primary"
+          (click)="ngForm.onSubmit($event)"
+          [disabled]="ngForm.form.invalid && ngForm.submitted"
+          mat-raised-button
+        >
+          Register
+        </app-loading-button>
+        <button class="login-button" mat-stroked-button routerLink="/login">Login</button>
+      </div>
+    </form>
+  </div>
+</div>

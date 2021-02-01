@@ -1,0 +1,88 @@
+<div ngModelGroup="parameters" #ngAllParameters="ngModelGroup">
+  <mat-card
+    *ngFor="let param of parameters; index as i"
+    ngModelGroup="param-{{ getUniqueID(param) }}"
+    class="mat-elevation-z4"
+  >
+    <div class="flex">
+      <div>
+        <div
+          class="io-label-row"
+          *ngFor="let label of param.labels; index as j"
+          ngModelGroup="label-{{ getUniqueID(label) }}"
+        >
+          <mat-form-field [ngClass]="{ 'margin-l-30': j != 0 }" style="width: 60%;">
+            <mat-label>Name</mat-label>
+            <input
+              id="label-{{ i }}-{{ j }}"
+              name="{{ paramName }}-label-{{ i }}-{{ j }}-name"
+              matInput
+              [(ngModel)]="label.name"
+              appTrim
+              required
+            />
+          </mat-form-field>
+          <mat-form-field class="margin-l-30" style="width: 10%;">
+            <mat-label>Language</mat-label>
+            <mat-select
+              id="label-lang-{{ i }}-{{ j }}"
+              name="{{ paramName }}-label-{{ i }}-{{ j }}-language"
+              [(ngModel)]="label.language"
+            >
+              <mat-option *ngFor="let language of languages" [value]="language">
+                {{ language }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button
+            id="remove-label-{{ i }}-{{ j }}"
+            *ngIf="j != 0"
+            mat-icon-button
+            class="margin-l-30"
+            (click)="removeLabel(param, label)"
+            type="button"
+          >
+            <mat-icon aria-hidden="false" aria-label="Delete label">clear</mat-icon>
+          </button>
+        </div>
+        <button id="add-label-{{ i }}" class="margin-l-30" mat-button type="button" (click)="addLabel(param)">
+          + ADD NEW LABEL
+        </button>
+      </div>
+      <div class="io-right-side">
+        <mat-form-field style="width: 65%;">
+          <mat-label>Description</mat-label>
+          <input
+            id="description-{{ i }}"
+            name="{{ paramName }}-label-{{ i }}-description"
+            matInput
+            [(ngModel)]="param.description"
+            appTrim
+            required
+          />
+        </mat-form-field>
+        <mat-form-field class="margin-l-30" style="width: 15%;">
+          <mat-label>Unit</mat-label>
+          <input
+            id="unit-{{ i }}"
+            name="{{ paramName }}-label-{{ i }}-unit"
+            matInput
+            [(ngModel)]="param.unit"
+            appTrim
+            required
+          />
+        </mat-form-field>
+        <button
+          id="remove-io-description-{{ i }}"
+          mat-icon-button
+          type="button"
+          class="margin-l-30"
+          (click)="removeParameter(param)"
+        >
+          <mat-icon aria-hidden="false" aria-label="Delete input / output">clear</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+  <button id="add-io-description" type="button" mat-button (click)="addParameter()">+ ADD NEW {{ paramName }}</button>
+</div>

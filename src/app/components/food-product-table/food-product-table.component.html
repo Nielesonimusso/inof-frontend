@@ -1,0 +1,108 @@
+<div class="foodproduct-container">
+  <div class="page-header">
+    <div class="left">
+      <h2 class="title">{{ pageTitle }}</h2>
+    </div>
+    <div class="right">
+      <mat-form-field class="search" id="searchBar">
+        <mat-label>
+          Search Food Product
+        </mat-label>
+        <mat-icon class="mat-icon-fix-lineheight" matSuffix>
+          search
+        </mat-icon>
+        <input (keyup)="applyFilter($event.target.value)" matInput type="search" />
+      </mat-form-field>
+      <button routerLink="./add" class="edit-button" color="primary" mat-raised-button>
+        Add Food Product
+      </button>
+    </div>
+  </div>
+
+  <table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc" class="foodproduct-table-container table-transparant-header" mat-table>
+    <!-- productName Column -->
+    <ng-container matColumnDef="name">
+      <th *matHeaderCellDef class="table-column product-name-column" mat-header-cell>
+        Product Name
+      </th>
+      <td *matCellDef="let element" class="table-row" mat-cell>
+        {{ element.name }}
+      </td>
+    </ng-container>
+
+    <!-- companyCode Column -->
+    <ng-container matColumnDef="companyCode">
+      <th *matHeaderCellDef class="table-column" mat-header-cell>
+        Company Code
+      </th>
+      <td *matCellDef="let element" class="table-row" mat-cell>
+        {{ element.companyCode }}
+      </td>
+    </ng-container>
+
+    <!-- standardCode Column -->
+    <ng-container matColumnDef="standardCode">
+      <th *matHeaderCellDef class="table-column" mat-header-cell>
+        Standard Code
+      </th>
+      <td *matCellDef="let element" class="table-row" mat-cell>
+        {{ element.standardCode }}
+      </td>
+    </ng-container>
+
+    <!-- dosage Column -->
+    <ng-container matColumnDef="dosage">
+      <th *matHeaderCellDef class="table-column" mat-header-cell>
+        Dosage
+      </th>
+      <td *matCellDef="let element" class="table-row" mat-cell>
+        {{ dosageString(element) }}
+      </td>
+    </ng-container>
+
+    <!-- Actions (i.e. isCreator) Column -->
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef class="table-column" mat-header-cell>
+        Actions
+      </th>
+      <td *matCellDef="let element; index as i" mat-cell>
+        <ng-container *ngIf="isCreator(element) | async">
+          <button
+            id="delete-button-{{ i }}"
+            mat-icon-button
+            (click)="deleteFoodProduct(element); $event.stopPropagation()"
+          >
+            <mat-icon class="mat-18">
+              delete
+            </mat-icon>
+          </button>
+          <button mat-icon-button [routerLink]="['./edit', element.id]" [state]="{ data: element }">
+            <mat-icon class="mat-18">
+              create
+            </mat-icon>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="(isCreator(element) | async) === false">
+          <div class="badge">
+            VIEWABLE
+          </div>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns; sticky: true" mat-header-row></tr>
+    <tr
+      [routerLink]="['./inspect', row.id]"
+      [state]="{ data: row }"
+      *matRowDef="let row; columns: displayedColumns"
+      mat-row
+      class="clickable"
+    ></tr>
+  </table>
+
+  <div class="spinner-container" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+</div>

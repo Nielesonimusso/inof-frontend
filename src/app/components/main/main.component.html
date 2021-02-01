@@ -1,0 +1,19 @@
+<!-- Wrap the whole page -->
+<div class="page-wrapper">
+  <!-- Left navigation sidebar, contains all links to pages -->
+  <app-sidebar [routes]="routes"></app-sidebar>
+
+  <!-- On the right of the navigation, we show the content of the page -->
+  <div class="content">
+    <div class="spacing">
+      <div id="breadcrumbs">
+        <div *ngFor="let breadcrumb of breadcrumbs; index as i">
+          <a [routerLink]="'/' + breadcrumb.url">{{ breadcrumb.label }}</a>
+          <span *ngIf="i != breadcrumbs.length - 1">></span>
+        </div>
+      </div>
+      <!-- Dynamically load page based on the url -->
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

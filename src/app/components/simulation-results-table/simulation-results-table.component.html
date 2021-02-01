@@ -1,0 +1,18 @@
+<table
+  [dataSource]="dataSource"
+  class="results-table-container table-transparant-header"
+  style="width: 100%;"
+  mat-table
+>
+  <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
+    <th *matHeaderCellDef class="table-column" mat-header-cell style="padding-right: 10px;">
+      {{ column }}
+    </th>
+    <td *matCellDef="let element" class="table-row" mat-cell>
+      {{ element[column] }}
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+  <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+</table>

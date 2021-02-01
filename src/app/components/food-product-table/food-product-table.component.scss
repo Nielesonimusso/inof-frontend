@@ -1,0 +1,55 @@
+.foodproduct-container {
+  width: 100%;
+}
+
+.product-name-column {
+  width: 35%;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.foodproduct-table-container {
+  width: 100%;
+}
+
+.title {
+  margin: 0;
+  display: inline-block;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.table-row {
+  font-size: 14px;
+  max-width: 120px;
+  padding: 8px 4px;
+  word-wrap: break-word;
+}
+
+.table-column {
+  font-size: 12px;
+}
+
+table {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 900px;
+  table-layout: fixed;
+}
+
+td {
+  word-wrap: break-word;
+}
+
+.search {
+  width: 200px;
+  margin-right: 40px;
+}

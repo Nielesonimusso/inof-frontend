@@ -1,0 +1,162 @@
+/* Global page styles */
+/* Do not include page-specific styles here */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+* {
+  font-family: 'Source Sans Pro', sans-serif;
+  box-sizing: border-box;
+}
+
+.mat-icon-fix-lineheight {
+  position: relative;
+  bottom: -8px;
+}
+
+.mat-icon {
+  color: #5d5d5d;
+}
+
+.snack-error {
+  background-color: #ec4c40;
+  color: white;
+}
+
+.mat-paginator {
+  background: none;
+}
+
+.table-transparant-header {
+  background: none;
+}
+
+.table-transparant-header tbody,
+.table-transparant-header tfoot {
+  background: white;
+}
+
+.mat-tab-label-active {
+  font-weight: bold;
+}
+
+.login-page,
+.register-page,
+.forgot-password-page,
+.reset-password-page,
+.profile-page {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background: #f2f2f2;
+  min-height: 100vh;
+
+  // Stops the form field label from floating into oblivion...
+  .mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+    transform: none;
+  }
+
+  .form-container {
+    width: 90%;
+    max-width: 337px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: white;
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .title {
+    color: #818181;
+    font-weight: bold;
+    font-size: 23px;
+    margin-top: 120px;
+    margin-bottom: 30px;
+  }
+
+  label {
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #818181;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-top: -7px;
+  }
+
+  input {
+    border: 1px solid #707070;
+    border-radius: 2px;
+    padding: 6px 4px;
+  }
+
+  button {
+    text-transform: uppercase;
+  }
+}
+
+.profile-page {
+  .mat-form-field-label-wrapper {
+    top: -1em;
+  }
+
+  .mat-form-field-infix {
+    padding-bottom: 0;
+  }
+
+  .mat-form-field-wrapper {
+    padding-bottom: 2.2em;
+  }
+
+  .mat-form-field-subscript-wrapper {
+    margin-top: 0;
+    top: calc(100% - 2.8em);
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.tile-flex-start .mat-figure {
+  align-items: flex-start !important;
+}
+
+.snackbar-error {
+  color: #ec4c40;
+}
+
+.loading-container {
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0px;
+}
+
+.mat-tab-label .mat-tab-label-invalid {
+  color: #f44336;
+}
+
+.badge {
+  background-color: #bdc3c7;
+  color: white;
+  border-radius: 20px;
+  padding: 5px 10px;
+  display: inline-block;
+}
+
+.badge.badge-executable {
+  background-color: #95a5a6;
+}
