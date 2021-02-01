@@ -11,16 +11,16 @@ test:nglint:
     - ng lint
 
 # Testing phase: unit- and component tests
-test:karma:
-  stage: test
-  image: nielesonimusso/ng-cli-chromium
-  script:
-    - npm i
-    - ng test --code-coverage --progress false --watch=false
-  coverage: '/Lines \W+: (\d+\.\d+)%.*/' # Show code coverage (%) in pipeline view
-  artifacts:
-    paths:
-      - coverage/
+#test:karma:
+#  stage: test
+#  image: nielesonimusso/ng-cli-chromium
+#  script:
+#    - npm i
+#    - ng test --code-coverage --progress false --watch=false
+#  coverage: '/Lines \W+: (\d+\.\d+)%.*/' # Show code coverage (%) in pipeline view
+#  artifacts:
+#    paths:
+#      - coverage/
 
 # Building phase: install dependencies and build project
 build:
