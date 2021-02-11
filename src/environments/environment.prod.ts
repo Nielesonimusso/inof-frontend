@@ -2,5 +2,5 @@
 
 export const environment = {
   production: true,
-  API_ROOT: 'http://internet-of-food.win.tue.nl:5000'
+  API_ROOT: 'http://internet-of-food.win.tue.nl:81'
 };
