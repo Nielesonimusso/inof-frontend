@@ -101,8 +101,8 @@
                 </div>
               </mat-grid-tile>
               <!-- Right half of the GENERAL INFO TAB-->
-              <mat-grid-tile class="overflow-auto">
-                <div class="page-left-align">
+              <mat-grid-tile>
+                <div class="page-left-align overflow-auto">
                   <h4>Food Product</h4>
                   <div *ngIf="selectedFoodProduct !== null; then showChosenFoodProduct; else showEmptyField"></div>
                   <ng-template #showChosenFoodProduct>
