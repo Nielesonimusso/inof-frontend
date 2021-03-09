@@ -103,57 +103,59 @@
               <!-- Right half of the GENERAL INFO TAB-->
               <mat-grid-tile>
                 <div class="page-left-align overflow-auto">
-                  <h4>Food Product</h4>
-                  <div *ngIf="selectedFoodProduct !== null; then showChosenFoodProduct; else showEmptyField"></div>
-                  <ng-template #showChosenFoodProduct>
-                    <mat-card class="selected-food-product mat-elevation-z4">
-                      <mat-card-title-group>
-                        <mat-card-title id="foodProductName">{{ selectedFoodProduct.name }}</mat-card-title>
-                        <mat-card-subtitle id="foodProductCompanyAndStandardCode">
-                          {{ selectedFoodProduct.companyCode }}<br />
-                          {{ selectedFoodProduct.standardCode }}
-                        </mat-card-subtitle>
-                      </mat-card-title-group>
-                      <div class="force-right"></div>
-                      <mat-card-actions class="foodproduct-actions">
-                        <button
-                          id="foodproduct-inspect-button"
-                          type="button"
-                          mat-icon-button
-                          (click)="inspectFoodProduct()"
-                        >
-                          <mat-icon>
-                            open_in_new
-                          </mat-icon>
-                        </button>
-                        <button
-                          id="foodproduct-delete-button"
-                          type="button"
-                          mat-icon-button
-                          (click)="deleteFoodProduct()"
-                        >
-                          <mat-icon>
-                            clear
-                          </mat-icon>
-                        </button>
-                      </mat-card-actions>
-                    </mat-card>
-                  </ng-template>
-                  <ng-template #showEmptyField>
-                    <mat-card
-                      class="choose-food-product"
-                      [ngClass]="{ 'choose-food-product-invalid': ngForm.submitted }"
-                    >
-                      <mat-card-title>
-                        No Food Product selected. Select a Food Product in the table below.
-                      </mat-card-title>
-                    </mat-card>
-                    <app-select-food-product-table
-                      [rows]="availableFoodProducts"
-                      (itemAdded)="onFoodProductAdded($event)"
-                      pageTitle="All Available Food Products"
-                    ></app-select-food-product-table>
-                  </ng-template>
+                  <div class="overflow-auto">
+                    <h4>Food Product</h4>
+                    <div *ngIf="selectedFoodProduct !== null; then showChosenFoodProduct; else showEmptyField"></div>
+                    <ng-template #showChosenFoodProduct>
+                      <mat-card class="selected-food-product mat-elevation-z4">
+                        <mat-card-title-group>
+                          <mat-card-title id="foodProductName">{{ selectedFoodProduct.name }}</mat-card-title>
+                          <mat-card-subtitle id="foodProductCompanyAndStandardCode">
+                            {{ selectedFoodProduct.companyCode }}<br />
+                            {{ selectedFoodProduct.standardCode }}
+                          </mat-card-subtitle>
+                        </mat-card-title-group>
+                        <div class="force-right"></div>
+                        <mat-card-actions class="foodproduct-actions">
+                          <button
+                            id="foodproduct-inspect-button"
+                            type="button"
+                            mat-icon-button
+                            (click)="inspectFoodProduct()"
+                          >
+                            <mat-icon>
+                              open_in_new
+                            </mat-icon>
+                          </button>
+                          <button
+                            id="foodproduct-delete-button"
+                            type="button"
+                            mat-icon-button
+                            (click)="deleteFoodProduct()"
+                          >
+                            <mat-icon>
+                              clear
+                            </mat-icon>
+                          </button>
+                        </mat-card-actions>
+                      </mat-card>
+                    </ng-template>
+                    <ng-template #showEmptyField>
+                      <mat-card
+                        class="choose-food-product"
+                        [ngClass]="{ 'choose-food-product-invalid': ngForm.submitted }"
+                      >
+                        <mat-card-title>
+                          No Food Product selected. Select a Food Product in the table below.
+                        </mat-card-title>
+                      </mat-card>
+                      <app-select-food-product-table
+                        [rows]="availableFoodProducts"
+                        (itemAdded)="onFoodProductAdded($event)"
+                        pageTitle="All Available Food Products"
+                      ></app-select-food-product-table>
+                    </ng-template>
+                  </div>
                 </div>
               </mat-grid-tile>
             </mat-grid-list>
