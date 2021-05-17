@@ -37,6 +37,7 @@ export interface UserProfile extends UserInfo {
   // Company cannot be updated
   readonly companyId: string;
   readonly company: Company;
+  readonly apiKey: string;
 }
 
 /* Interface for user profile update */

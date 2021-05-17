@@ -24,6 +24,12 @@
                 <span id="company-address">{{ userProfile.company.address }}</span>
               </p>
             </div>
+            <div class="api_key-header">
+              <h5>API Key</h5>
+              <p>
+                <span id="api-key">{{ userProfile.apiKey }}</span>
+              </p>
+            </div>
             <mat-form-field appearance="none">
               <mat-label>Email</mat-label>
               <input id="email" name="email" matInput [(ngModel)]="userProfile.email" #ngEmail="ngModel" email />
