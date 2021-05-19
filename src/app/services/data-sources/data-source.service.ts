@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DataSource, DataSourcePermission } from '../../models'
 
@@ -43,5 +43,13 @@ export class DataSourceService {
 
     getPermissions(dataSourceId: string): Observable<DataSourcePermission[]> {
         return this.http.get<DataSourcePermission[]>(`${API_ROOT}/api/data_source/permissions/${dataSourceId}`);
+    }
+
+    fetchData(dataSourceGateway: string): Observable<object[]> {
+        return this.http.get<object[]>(dataSourceGateway + 'data.json');
+    }
+
+    fetchOntology(dataSourceGateway: string): Observable<string> {
+        return this.http.get(dataSourceGateway + "ontology.ttl", { responseType: 'text'});
     }
 }

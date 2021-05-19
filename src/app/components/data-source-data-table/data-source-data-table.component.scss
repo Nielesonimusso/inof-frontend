@@ -1,0 +1,19 @@
+table {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 900px;
+  table-layout: fixed;
+}
+
+.table-row {
+  font-size: 14px;
+}
+
+.table-column {
+  font-size: 12px;
+}
+
+td {
+  word-wrap: break-word;
+}

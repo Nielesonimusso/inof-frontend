@@ -1,0 +1,23 @@
+<div *ngIf="!rows; then loading; else loaded"></div>
+<ng-template #loading>
+  <div class="loading-container">
+    <ngx-skeleton-loader count="5"></ngx-skeleton-loader>
+  </div>
+</ng-template>
+<!-- Material Table -->
+<ng-template #loaded>
+  <table [dataSource]="rows" mat-table>
+    <ng-container *ngFor="let column of displayedColumns" >
+      <!-- Columns -->
+      <ng-container matColumnDef="{{column}}">
+        <th class="table-column" mat-header-cell *matHeaderCellDef>{{column}}</th>
+        <td mat-cell *matCellDef="let dataSource">{{dataSource[column]}}</td>
+      </ng-container>
+    </ng-container>
+
+    <!-- Bind columns to the displayedColumns property. Sticky Header ensures the header stays in place when the table is scrolled. -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <!-- Declare rows -->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</ng-template>

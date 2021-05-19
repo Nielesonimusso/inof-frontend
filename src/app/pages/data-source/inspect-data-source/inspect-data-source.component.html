@@ -128,7 +128,7 @@
             <!-- Main header in tab -->
             <h3>Data provided by Data Source</h3>
             <!-- Use DataSourceDataTableComponent. Bind to gateway url -->
-            <!--app-data-source-data-table class="table" [gateway]="dataSource.gatewayUrl"></app-data-source-data-table-->
+            <app-data-source-data-table *ngIf="dataSource.isConnected" class="table" [gateway]="dataSource.gatewayUrl"></app-data-source-data-table>
           </div>
         </mat-tab>
         <mat-tab label="ONTOLOGY">

@@ -61,6 +61,7 @@ import {
   SimulationResultsViewerComponent,
   SimulationResultsTableComponent,
   DataSourceTableComponent,
+  DataSourceDataTableComponent,
 } from './components';
 
 /* Import Custom Directives */
@@ -173,6 +174,7 @@ import { ModelStatusesPipe } from './utilities/model-statuses-pipe';
     ErrorComponent,
     AddEditDataSourceComponent,
     InspectDataSourceComponent,
+    DataSourceDataTableComponent,
   ],
   // The set of NgModules whose exported declarables are available to templates in this module.
   imports: [
