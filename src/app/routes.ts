@@ -17,6 +17,14 @@ import {
   AvailableModelsComponent,
 } from './pages/model';
 
+/* Import Data Source Pages */
+import {
+  AvailableDataSourcesComponent,
+  MyDataSourcesComponent,
+  AddEditDataSourceComponent,
+  InspectDataSourceComponent,
+} from './pages/data-source';
+
 /* Import Simulation Pages */
 import { SimulationComponent, InspectSimulationComponent, AddEditSimulationComponent } from './pages/simulation';
 
@@ -80,6 +88,30 @@ const sharedModelPages = [
   },
 ];
 
+const sharedDataSourcePages = [
+  {
+    path: 'inspect/:id',
+    component: InspectDataSourceComponent,
+    data: {
+      name: 'Inspect Data Source',
+    },
+  },
+  {
+    path: 'edit/:id',
+    component: AddEditDataSourceComponent,
+    data: {
+      name: 'Edit Data Source',
+    },
+  },
+  {
+    path: 'add',
+    component: AddEditDataSourceComponent,
+    data: {
+      name: 'Add Data Source',
+    },
+  },
+]
+
 /**
  * Define the array of AppRoutes.
  * Add a route to make it show up in the sidebar.
@@ -115,6 +147,36 @@ const routes: AppRoute[] = [
         component: AvailableFoodProductComponent,
       },
       ...sharedFoodProductPages
+    ],
+  },
+  // My Data Sources Page
+  {
+    path: 'my-data-sources',
+    data: {
+      name: 'My Data Sources',
+      location: SidePanelLocation.top,
+    },
+    children: [
+      {
+        path: '',
+        component: MyDataSourcesComponent,
+      },
+      ...sharedDataSourcePages
+    ],
+  },
+  // Available Data Sources Page
+  {
+    path: 'available-data-sources',
+    data: {
+      name: 'Available Data Sources',
+      location: SidePanelLocation.top,
+    },
+    children: [
+      {
+        path: '',
+        component: AvailableDataSourcesComponent,
+      },
+      ...sharedDataSourcePages
     ],
   },
   // My Models Page + Add / Edit / Inspect

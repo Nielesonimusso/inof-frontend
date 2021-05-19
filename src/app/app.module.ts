@@ -40,7 +40,7 @@ import { ErrorHandlingInterceptor } from './utilities/error-handling.interceptor
 import { AuthInterceptor } from './services/auth/authconfig.interceptor';
 
 /* Import Services */
-import { AuthService, SimulationService, FoodProductService, ModelService } from './services';
+import { AuthService, SimulationService, FoodProductService, ModelService, DataSourceService } from './services';
 
 /* Import Custom Components */
 import {
@@ -60,6 +60,7 @@ import {
   CancelEditsDialogComponent,
   SimulationResultsViewerComponent,
   SimulationResultsTableComponent,
+  DataSourceTableComponent,
 } from './components';
 
 /* Import Custom Directives */
@@ -80,6 +81,14 @@ import {
   InspectModelComponent,
   AvailableModelsComponent,
 } from './pages/model';
+
+/* Import Data Source Pages */
+import {
+  AvailableDataSourcesComponent,
+  MyDataSourcesComponent,
+  AddEditDataSourceComponent,
+  InspectDataSourceComponent,
+} from './pages/data-source';
 
 /* Import Simulation Pages */
 import {
@@ -127,6 +136,9 @@ import { ModelStatusesPipe } from './utilities/model-statuses-pipe';
     AddEditFoodProductComponent,
     ModelTableComponent,
     MyModelsComponent,
+    DataSourceTableComponent,
+    MyDataSourcesComponent,
+    AvailableDataSourcesComponent,
     FoodProductTableComponent,
     MyFoodProductComponent,
     SimulationComponent,
@@ -159,6 +171,8 @@ import { ModelStatusesPipe } from './utilities/model-statuses-pipe';
     LoadingButtonComponent,
     CancelEditsDialogComponent,
     ErrorComponent,
+    AddEditDataSourceComponent,
+    InspectDataSourceComponent,
   ],
   // The set of NgModules whose exported declarables are available to templates in this module.
   imports: [
@@ -196,6 +210,7 @@ import { ModelStatusesPipe } from './utilities/model-statuses-pipe';
     SimulationService,
     FoodProductService,
     ModelService,
+    DataSourceService,
     // Interceptors to do things in http requests in a general way
     {
       provide: HTTP_INTERCEPTORS,

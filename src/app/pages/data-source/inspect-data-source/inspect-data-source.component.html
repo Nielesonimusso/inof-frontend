@@ -1,0 +1,145 @@
+<div class="inspect-data-sources-container">
+  <!-- Title Bar, containing title + Edit button-->
+  <div class="title-bar">
+    <div class="left">
+      <h2 class="title">
+        <span>Inspect Data Source: </span>
+        <ng-template [ngIf]="dataSource">{{ dataSource.name }}</ng-template>
+      </h2>
+    </div>
+    <div class="right">
+      <a
+        *ngIf="dataSource && (showEditButton() | async)"
+        [routerLink]="['../../edit', dataSource.id]"
+        [state]="{ data: dataSource }"
+        [fragment]="tabIndex"
+        mat-raised-button
+        color="primary"
+        class="edit-button"
+      >
+        EDIT
+      </a>
+    </div>
+  </div>
+  <!-- Declare the card -->
+  <mat-card class="card-full-width">
+    <div *ngIf="!dataSource; then loading; else loaded"></div>
+    <ng-template #loading>
+      <mat-tab-group mat-stretch-tabs [(selectedIndex)]="tabIndex">
+        <!-- General Info tab-->
+        <mat-tab label="GENERAL INFO">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="5"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+        <mat-tab label="DATA">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+        <mat-tab label="ONTOLOGY">
+          <div class="loading-container">
+            <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-template>
+    <ng-template #loaded>
+      <mat-tab-group mat-stretch-tabs mat-align-tabs="center" [(selectedIndex)]="tabIndex">
+        <!-- General Info tab-->
+        <mat-tab label="GENERAL INFO">
+          <mat-grid-list cols="2" rowHeight="350px">
+            <!-- General Information block -->
+            <mat-grid-tile class="tile-flex-start">
+              <div class="left-align">
+                <h3>General Information</h3>
+                <!--p id="description">{{ model.description }}</p-->
+                <!-- Declare owner -->
+                <br />
+                <!-- Declare creator -->
+                <div id="creator">
+                  <span class="bold fixed-width-title">Created By: </span>
+                  <span>{{ dataSource.createdBy.fullName }}</span>
+                </div>
+                <br />
+                <div id="owner">
+                  <span class="bold fixed-width-title">Owned by: </span>
+                  <span>{{ dataSource.owner.name ? dataSource.owner.name : '' }}</span>
+                </div>
+                <br />
+                <!-- Declare price -->
+                <div id="price">
+                  <span class="bold fixed-width-title">Price: </span>
+                  <span>{{ dataSource.price + ' €/call' }}</span>
+                </div>
+              </div>
+            </mat-grid-tile>
+            <!-- Connection Details block -->
+            <mat-grid-tile class="tile-flex-start">
+              <div class="left-align">
+                <div id="dataSourcePermissions" *ngIf="showPermissions() | async">
+                  <h3>Data Source Permissions</h3>
+                  <p *ngIf="selectedCompanies.length > 0; then permissions; else noPermissions"></p>
+                  <ng-template #permissions>
+                    The following companies are allowed to see/use your data source:
+                  </ng-template>
+                  <ng-template #noPermissions>
+                    This data source is not shared
+                  </ng-template>
+                  <div id="selected-companies">
+                    <div *ngFor="let selectedCompany of selectedCompanies; index as i" style="white-space: pre-line;">
+                      {{ '- ' + selectedCompany.name }}
+                    </div>
+                  </div>
+                </div>
+                <h3>Connection Details</h3>
+                <!-- Gateway URL
+                Set to a fixed width, and bold property name -->
+                <div id="gateway-url">
+                  <span class="bold fixed-width-title">Gateway URL: </span>
+                  <span class="fixed-width-value">{{ dataSource.gatewayUrl }}</span>
+                  <!-- Copy Button -->
+                  <button
+                    id="copy-button"
+                    class="copy-button"
+                    mat-icon-button
+                    aria-label="Copy Gateway URL"
+                    (click)="copyText(dataSource.gatewayUrl)"
+                  >
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                </div>
+                <br />
+                <!-- Status
+                Set to have a bold property name -->
+                <div id="status">
+                  <span class="bold">Status: </span>
+                  <span [className]="dataSource.isConnected ? 'connected' : 'not_connected'">{{
+                    dataSource.isConnected ? 'CONNECTED' : 'NOT CONNECTED'
+                  }}</span>
+                </div>
+              </div>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </mat-tab>
+        <!-- Data tab -->
+        <mat-tab label="DATA">
+          <div class="tile no-margin-block">
+            <!-- Main header in tab -->
+            <h3>Data provided by Data Source</h3>
+            <!-- Use DataSourceDataTableComponent. Bind to gateway url -->
+            <!--app-data-source-data-table class="table" [gateway]="dataSource.gatewayUrl"></app-data-source-data-table-->
+          </div>
+        </mat-tab>
+        <mat-tab label="ONTOLOGY">
+          <div class="tile no-margin-block">
+            <!-- Main header in tab -->
+            <h3>Ontology provided by Data Source</h3>
+            <!-- Use ModelParameterTableComponent. Bind to inputs array -->
+            <!--app-ontology-viewer [gateway]="dataSource.gatewayUrl"></app-ontology-viewer-->
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-template>
+  </mat-card>
+</div>

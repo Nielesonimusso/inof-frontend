@@ -1,0 +1,137 @@
+<div class="add-edit-data-source-container">
+  <form #ngForm="ngForm" (ngSubmit)="ngForm.form.valid && saveDataSource()">
+    <div class="add-edit-data-source-header">
+      <div class="add-edit-data-source-header-row">
+        <h2 style="margin: 0;">
+          <ng-template [ngIf]="dataSource">{{ dataSource.id ? 'Edit Data Source: ' + dataSource.name : 'Add a new Data Source' }}</ng-template>
+        </h2>
+        <a id="cancel" style="margin-left: auto;" mat-button (click)="cancel()">CANCEL</a>
+        <app-loading-button id="save" mat-raised-button color="primary" (click)="ngForm.onSubmit($event)"
+          [disabled]="ngForm.form.invalid && ngForm.submitted">
+          SAVE
+        </app-loading-button>
+      </div>
+    </div>
+    <mat-card class="card-full-width">
+      <div *ngIf="!dataSource; then loading; else loaded"></div>
+      <ng-template #loading>
+        <mat-tab-group class="tabs" mat-stretch-tabs [(selectedIndex)]="tabIndex">
+          <!-- General Info tab-->
+          <mat-tab label="GENERAL INFO *">
+            <div class="loading-container">
+              <ngx-skeleton-loader count="5"></ngx-skeleton-loader>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-template>
+      <ng-template #loaded>
+        <mat-tab-group mat-stretch-tabs [(selectedIndex)]="tabIndex" mat-align-tabs="center" class="tabs">
+          <mat-tab ngModelGroup="generalInfo" #ngGeneralInfo="ngModelGroup">
+            <ng-template mat-tab-label>
+              <span [ngClass]="{ 'mat-tab-label-invalid': ngForm.submitted && ngGeneralInfo.invalid }">GENERAL INFO
+                *</span>
+            </ng-template>
+            <!-- General information tab-->
+            <mat-grid-list cols="2">
+              <mat-grid-tile class="tile-flex-start">
+                <div class="left-align">
+                  <div>
+                    <h4>General Info</h4>
+                    <!-- Data Source Name form field -->
+                    <mat-form-field class="width-100">
+                      <mat-label>Name of Data Source</mat-label>
+                      <input id="name" name="name" matInput [(ngModel)]="dataSource.name" appTrim required />
+                    </mat-form-field>
+                    <br />
+                    <!-- Data Source Price form field -->
+                    <mat-form-field class="width-50">
+                      <mat-label>Price</mat-label>
+                      <input id="price" name="price" matInput type="number" [(ngModel)]="dataSource.price" #ngPrice="ngModel"
+                        min="0" />
+                      <span matSuffix>€/use</span>
+                      <mat-error *ngIf="ngPrice.invalid && ngPrice.errors.min">Price cannot be lower than 0.</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div>
+                    <h4>Connection Details</h4>
+                    <!-- Data Source Gateway URL form field -->
+                    <mat-form-field class="width-100">
+                      <mat-label>Gateway URL</mat-label>
+                      <input id="gateway-url" name="gatewayUrl" type="url" matInput [(ngModel)]="dataSource.gatewayUrl"
+                        #ngGatewayUrl="ngModel" appTrim required />
+                      <mat-error *ngIf="ngGatewayUrl.invalid && ngGatewayUrl.errors.url">Gateway URL is invalid.
+                      </mat-error>
+                      <mat-error *ngIf="ngGatewayUrl.invalid && ngGatewayUrl.errors.server">{{
+                        ngGatewayUrl.errors.server
+                      }}</mat-error>
+                    </mat-form-field>
+                    <!--br />
+                    <!-- Data Source isConnected checkbox ->
+                    <mat-checkbox id="is-connected" name="isConnected" [(ngModel)]="dataSource.isConnected" color="primary">
+                      Connected</mat-checkbox-->
+                    <input type="hidden" id="is-connected" name="isConnected" [(ngModel)]="dataSource.isConnected" 
+                      #ngIsConnected="ngModel" value="false" />
+                  </div>
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="tile-flex-start">
+                <div class="add-edit-data-source-left-align left-align">
+                  <div>
+                    <h4>Permissions</h4>
+                    <mat-form-field>
+                      <mat-label>Select Companies To Share This Data Source With</mat-label>
+                      <mat-select [(ngModel)]="selectedCompanies" [compareWith]="compareCompanies"
+                        (selectionChange)="matSelectPermissionChange()" multiple id="all-companies" name="mat-select">
+                        <mat-option *ngFor="let company of companies; index as i" [value]="company">
+                          {{ company.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- Extra space for not overlapping with the select element -->
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <p>The following companies are allowed to see/use your data source:</p>
+                    <div class="page-full" *ngIf="companyPermission.length > 0" id="selected-companies">
+                      <table #permissionsTable [dataSource]="companyPermission" class="width-100" mat-table>
+                        <ng-container matColumnDef="companyName">
+                          <th mat-header-cell *matHeaderCellDef>Company Name</th>
+                          <td mat-cell *matCellDef="let element; let i = index">
+                            {{ '- ' + element[0].name }}
+                            <button mat-icon-button type="button" (click)="removeCompany(i)"
+                              id="selected-company-delete-button-{{ i }}">
+                              <mat-icon class="mat-18">clear</mat-icon>
+                            </button>
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="view">
+                          <th mat-header-cell *matHeaderCellDef>View</th>
+                          <td mat-cell *matCellDef="let element; let i = index">
+                            <mat-checkbox [checked]="true" disabled name="viewRight-{{ i }}"></mat-checkbox>
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="access">
+                          <th mat-header-cell *matHeaderCellDef>Access</th>
+                          <td mat-cell *matCellDef="let element; let i = index">
+                            <mat-checkbox [(ngModel)]="element[1]" name="accessRight-{{ i }}"></mat-checkbox>
+                          </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-grid-tile>
+            </mat-grid-list>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-template>
+    </mat-card>
+  </form>
+</div>

@@ -16,3 +16,4 @@ export * from './cancel-edits-dialog';
 export * from './simulation-results-table';
 export * from './simulation-results-viewer';
 export * from './tabbed-component';
+export * from './data-source-table';
