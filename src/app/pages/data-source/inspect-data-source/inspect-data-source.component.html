@@ -123,20 +123,20 @@
           </mat-grid-list>
         </mat-tab>
         <!-- Data tab -->
-        <mat-tab label="DATA">
+        <mat-tab label="DATA" [disabled]="!dataSource.isConnected">
           <div class="tile no-margin-block">
             <!-- Main header in tab -->
             <h3>Data provided by Data Source</h3>
             <!-- Use DataSourceDataTableComponent. Bind to gateway url -->
-            <app-data-source-data-table *ngIf="dataSource.isConnected" class="table" [gateway]="dataSource.gatewayUrl"></app-data-source-data-table>
+            <app-data-source-data-table  *ngIf="dataSource.isConnected" class="table" [gateway]="dataSource.gatewayUrl"></app-data-source-data-table>
           </div>
         </mat-tab>
-        <mat-tab label="ONTOLOGY">
+        <mat-tab label="ONTOLOGY" [disabled]="!dataSource.isConnected">
           <div class="tile no-margin-block">
             <!-- Main header in tab -->
             <h3>Ontology provided by Data Source</h3>
             <!-- Use ModelParameterTableComponent. Bind to inputs array -->
-            <!--app-ontology-viewer [gateway]="dataSource.gatewayUrl"></app-ontology-viewer-->
+            <app-ontology-viewer *ngIf="dataSource.isConnected" [gateway]="dataSource.gatewayUrl"></app-ontology-viewer>
           </div>
         </mat-tab>
       </mat-tab-group>

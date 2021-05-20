@@ -62,6 +62,7 @@ import {
   SimulationResultsTableComponent,
   DataSourceTableComponent,
   DataSourceDataTableComponent,
+  OntologyViewerComponent,
 } from './components';
 
 /* Import Custom Directives */
@@ -175,6 +176,7 @@ import { ModelStatusesPipe } from './utilities/model-statuses-pipe';
     AddEditDataSourceComponent,
     InspectDataSourceComponent,
     DataSourceDataTableComponent,
+    OntologyViewerComponent
   ],
   // The set of NgModules whose exported declarables are available to templates in this module.
   imports: [

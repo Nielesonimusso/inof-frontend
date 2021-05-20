@@ -18,3 +18,4 @@ export * from './simulation-results-viewer';
 export * from './tabbed-component';
 export * from './data-source-table';
 export * from './data-source-data-table';
+export * from './ontology-viewer';
