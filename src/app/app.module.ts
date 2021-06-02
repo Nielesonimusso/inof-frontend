@@ -46,7 +46,6 @@ import { AuthService, SimulationService, FoodProductService, ModelService, DataS
 import {
   AppComponent,
   ModelTableComponent,
-  AddEditModelParametersComponent,
   FoodProductTableComponent,
   SidebarComponent,
   SimulationsTableComponent,
@@ -147,7 +146,6 @@ import { ModelStatusesPipe } from './utilities/model-statuses-pipe';
     SimulationsTableComponent,
     SidebarComponent,
     AddEditModelComponent,
-    AddEditModelParametersComponent,
     InspectModelComponent,
     ModelParameterTableComponent,
     InspectFoodProductComponent,

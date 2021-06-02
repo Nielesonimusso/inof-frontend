@@ -4,7 +4,7 @@ import { MatTableHarness } from '@angular/material/table/testing';
 import { Type } from '@angular/core';
 
 import { ModelParameterTableComponent } from './modelparameters-table.component';
-import { ModelParameter, ModelParameterLabel } from '../../models';
+import { ModelArgument } from '../../models';
 import { MatTableModule } from '@angular/material/table';
 import { TestbedHarnessEnvironment, UnitTestElement } from '@angular/cdk/testing/testbed';
 
@@ -40,7 +40,7 @@ describe('ModelParameterTableComponent', () => {
    * @param id unique id for the unique object
    * @param languages amount of languages to add to the description object
    */
-  const constructUniqueObject = (id: string, languages: number = 1): ModelParameter => {
+  const constructUniqueObject = (id: string, languages: number = 1): ModelArgument => {
     const labels: ModelParameterLabel[] = [];
     // Construct labels array, for each language an entry
     for (let l = 0; l < languages; l++) {
@@ -54,7 +54,7 @@ describe('ModelParameterTableComponent', () => {
       labels,
       unit: `unit${id}`,
       description: `description${id}`,
-    } as ModelParameter;
+    } as ModelArgument;
   };
 
   beforeEach(async () => {

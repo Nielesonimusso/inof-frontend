@@ -1,4 +1,4 @@
-export * from './add-edit-modelparameters';
+//export * from './add-edit-modelparameters';
 export * from './app-component';
 export * from './select-ingredients-table';
 export * from './food-product-table';

@@ -128,7 +128,7 @@
             <!-- Main header in tab -->
             <h3>Inputs for the model</h3>
             <!-- Use ModelParameterTableComponent. Bind to inputs array -->
-            <app-modelparameters-table class="table" [inputs]="model.inputDescriptions"></app-modelparameters-table>
+            <app-modelparameters-table class="table" [inputs]="model.inputs"></app-modelparameters-table>
           </div>
         </mat-tab>
         <mat-tab label="OUTPUT">
@@ -136,7 +136,7 @@
             <!-- Main header in tab -->
             <h3>Outputs for the model</h3>
             <!-- Use ModelParameterTableComponent. Bind to inputs array -->
-            <app-modelparameters-table class="table" [inputs]="model.outputDescriptions"></app-modelparameters-table>
+            <app-modelparameters-table class="table" [inputs]="model.outputs"></app-modelparameters-table>
           </div>
         </mat-tab>
       </mat-tab-group>

@@ -29,10 +29,11 @@ export interface Model extends ModelMinimal, HasCreator {
   description: string;
   price: number;
   readonly useCount?: number;
+  ontologyUri: string;
   gatewayUrl: string;
   isConnected: boolean;
-  inputDescriptions: ModelParameter[];
-  outputDescriptions: ModelParameter[];
+  readonly inputs: ModelArgument[];
+  readonly outputs: ModelArgument[];
 }
 
 /**
@@ -92,33 +93,31 @@ export interface ModelPermission {
 /**
  * An object for storing a description about a Model input or output
  */
-export interface ModelParameter {
-  /**
-   * The description of the model input or output
-   */
-  description: string;
-  /**
-   * The unit of the model input or output
-   */
-  unit: string;
-  /**
-   * The labels for the model input or output. Supports multiple languages
-   */
-  labels: ModelParameterLabel[];
+export interface ModelArgument {
+  /* The name of the argument */
+  readonly name: string;
+  /* The ontology URI of the argument */
+  readonly uri: string;
+  /* The ontology URI of the table type of the argument */
+  readonly type_uri: string;
+  /* The column definitions of the argument */
+  readonly columns: ModelArgumentColumn[];
 }
 
 /**
- * The ModelParameterLabelDb type supports the localization of labels.
+ * An object for storing a description of a column of a model argument
  */
-export interface ModelParameterLabel {
-  /**
-   * The language of the label as an enum of two ISO 639-1 codes.
-   */
-  language: LanguageLabel;
-  /**
-   * The label in the specified language
-   */
-  name: string;
+export interface ModelArgumentColumn {
+  /* The name of the column */
+  readonly name: string;
+  /* The ontology URI of the column */
+  readonly uri: string;
+  /* The datatype of the column */
+  readonly datatype: string;
+  /* The unit of the column, if the column belongs to a unit-value product */
+  readonly unit?: string;
+  /* The source for possible values of the column, if applicable */
+  readonly value_source?: string;
 }
 
 export const EmptyModel = (): Model => {
@@ -126,9 +125,10 @@ export const EmptyModel = (): Model => {
     name: '',
     description: '',
     price: 0,
+    ontologyUri: '',
     gatewayUrl: '',
     isConnected: false,
-    inputDescriptions: [],
-    outputDescriptions: [],
+    inputs: [],
+    outputs: [],
   };
 };

@@ -144,27 +144,27 @@
               </mat-grid-tile>
             </mat-grid-list>
           </mat-tab>
-          <mat-tab ngModelGroup="inputDescriptions" #ngInput="ngModelGroup">
-            <ng-template mat-tab-label>
-              <span [ngClass]="{ 'mat-tab-label-invalid': ngForm.submitted && ngInput.invalid }">INPUT *</span>
+          <mat-tab ngModelGroup="inputDescriptions" #ngInput="ngModelGroup" label="INPUT" disabled>
+            <!-- ng-template mat-tab-label>
+              <span>INPUT *</span>
             </ng-template>
-            <!-- Input tab for specifying model inputs-->
+            <!-- Input tab for specifying model inputs-!->
             <div class="add-edit-model-left-align">
               <h4>Specify inputs for the model</h4>
               <app-add-edit-modelparameters paramName="INPUT" [(parameters)]="model.inputDescriptions">
               </app-add-edit-modelparameters>
-            </div>
+            </div-->
           </mat-tab>
-          <mat-tab ngModelGroup="outputDescriptions" #ngOutput="ngModelGroup">
-            <ng-template mat-tab-label>
-              <span [ngClass]="{ 'mat-tab-label-invalid': ngForm.submitted && ngOutput.invalid }">OUTPUT *</span>
+          <mat-tab ngModelGroup="outputDescriptions" #ngOutput="ngModelGroup" label="OUTPUT" disabled>
+            <!-- ng-template mat-tab-label>
+              <span>OUTPUT *</span>
             </ng-template>
-            <!-- Output tab for specifying model outputs-->
+            <!-- Output tab for specifying model outputs-!->
             <div class="add-edit-model-left-align">
               <h4>Specify outputs for the model</h4>
               <app-add-edit-modelparameters paramName="OUTPUT" [(parameters)]="model.outputDescriptions">
               </app-add-edit-modelparameters>
-            </div>
+            </div-->
           </mat-tab>
         </mat-tab-group>
       </ng-template>
