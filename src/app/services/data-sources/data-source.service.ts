@@ -45,11 +45,11 @@ export class DataSourceService {
         return this.http.get<DataSourcePermission[]>(`${API_ROOT}/api/data_source/permissions/${dataSourceId}`);
     }
 
-    fetchData(dataSourceGateway: string): Observable<object[]> {
-        return this.http.get<object[]>(dataSourceGateway + 'data.json');
+    fetchData(dataSourceId: string): Observable<object[]> {
+        return this.http.get<object[]>(`${API_ROOT}/api/data_source/data/${dataSourceId}`);
     }
 
     fetchOntology(dataSourceGateway: string): Observable<string> {
-        return this.http.get(dataSourceGateway + "ontology.ttl", { responseType: 'text'});
+        return this.http.get(dataSourceGateway + "/ontology.ttl", { responseType: 'text'});
     }
 }

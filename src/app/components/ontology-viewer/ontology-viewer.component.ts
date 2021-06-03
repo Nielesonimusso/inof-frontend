@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { ModelArgumentColumn } from "src/app/models";
 
 import { DataSourceService } from '../../services';
 
@@ -9,17 +10,9 @@ import { DataSourceService } from '../../services';
   })
   export class OntologyViewerComponent implements OnInit {
 
-    ontology: string;
+    displayedColumns = ['name', 'type']
 
-    @Input() gateway: string;
+    @Input() columns: ModelArgumentColumn[];
 
-    constructor(
-        private service: DataSourceService,
-    ) {}
-
-    ngOnInit(): void {
-        this.service.fetchOntology(this.gateway).subscribe(
-            (result) => this.ontology = result
-        );
-    }
+    ngOnInit(): void { }
   }

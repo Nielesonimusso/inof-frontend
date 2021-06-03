@@ -1,18 +1,21 @@
-import { FindValueSubscriber } from 'rxjs/internal/operators/find';
+import { ModelArgumentColumn } from './model.model';
 import { HasOwner, Company, HasCreator } from './user.model';
 
 export declare type DataSources = DataSource[];
 
 export interface DataSource extends HasCreator, HasOwner {
     name: string;
+    ontologyUri?: string;
     gatewayUrl: string;
     price: number;
     isConnected: boolean;
+    readonly columns: ModelArgumentColumn[];
     readonly canAccess?: boolean;
     readonly useCount?: number;
 
     readonly id?: string;
 }
+
 
 export enum DataSourcePermissionType {
     view = 'view',
@@ -31,7 +34,9 @@ export const EmptyDataSource = (): DataSource => {
     return {
         name: '',
         price: 0,
+        ontologyUri: '',
         gatewayUrl: '',
-        isConnected: false
+        isConnected: false,
+        columns: []
     };
 };

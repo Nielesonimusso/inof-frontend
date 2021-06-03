@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { DataSource } from 'src/app/models';
 import { DataSourceService } from '../../services'
 
 @Component({
@@ -22,14 +23,14 @@ export class DataSourceDataTableComponent implements OnInit {
   /**
    * The gateway url of the data source
    */
-  @Input() gateway: string;
+  @Input() dataSource: DataSource;
 
   constructor(
     private service: DataSourceService
   ) {}
 
   ngOnInit(): void {
-    this.rows = this.service.fetchData(this.gateway).pipe(
+    this.rows = this.service.fetchData(this.dataSource.id).pipe(
       tap((data) => this.displayedColumns = Object.keys(data[0]))
     );
     /*.subscribe((data) => {

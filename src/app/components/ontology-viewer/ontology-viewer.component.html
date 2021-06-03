@@ -1,1 +1,21 @@
-<pre *ngIf="ontology" class="ontology-view">{{ontology}}</pre>
+<!-- Material Table -->
+<table [dataSource]="columns" mat-table>
+    <!-- Declare Columns. Order is not important: that is given by displayedColumns property -->
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th class="table-column" mat-header-cell *matHeaderCellDef>Name</th>
+      <td class="table-row" mat-cell *matCellDef="let column">{{ column.name }}</td>
+    </ng-container>
+    <!-- Label Column -->
+    <ng-container matColumnDef="type">
+      <th class="table-column" mat-header-cell *matHeaderCellDef>Type</th>
+      <td class="table-row" mat-cell *matCellDef="let column">{{ column.datatype }}</td>
+    </ng-container>
+  
+    <!-- Bind columns to the displayedColumns property. Sticky Header ensures the header stays in place when the table is scrolled. -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <!-- Declare rows -->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  
