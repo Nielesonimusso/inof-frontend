@@ -19,7 +19,7 @@ import { map } from 'rxjs/operators';
 export class SimulationsTableComponent extends AbstractTableComponent<Simulation> implements OnInit {
   // Define names of the columns
   @Input()
-  displayedColumns: string[] = ['name', 'owner', 'foodproductname', 'createdby', 'actions'];
+  displayedColumns: string[] = ['name', 'owner', /*'foodproductname',*/ 'createdby', 'actions'];
 
   // User's profile
   profile: Observable<UserProfile>;

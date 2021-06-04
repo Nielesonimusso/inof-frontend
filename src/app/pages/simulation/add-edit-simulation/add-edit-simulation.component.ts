@@ -1,7 +1,7 @@
-import { FoodProduct, FoodProductMinimal, Models, ModelMinimal } from '../../../models';
+import { FoodProduct, FoodProductMinimal, Models, ModelMinimal, DataSource, DataSources, DataSourceMinimal } from '../../../models';
 import { Simulation } from '../../../models';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FoodProductService, ModelService, SimulationService } from '../../../services';
+import { DataSourceService, FoodProductService, ModelService, SimulationService } from '../../../services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingButtonComponent, CancelEditsDialogComponent, CancelEditsDialogAction, TabbedComponent } from '../../../components';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -25,14 +25,16 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
   // Making empty versions of variables for the case the backend crashes this page does not crash and we are able to provide error messages.
   simulation: Simulation = null;
   availableModels: Models = [];
-  availableFoodProducts: FoodProduct[];
-  selectedFoodProduct: FoodProductMinimal;
+  availableDataSources: DataSources = [];
+  // availableFoodProducts: FoodProduct[];
+  // selectedFoodProduct: FoodProductMinimal;
 
   /**
    * The available models that are not yet selected.
    * A model cannot exist in the same simulation twice
    */
   availableModelsNotSelected: Models = [];
+  availableDataSourcesNotSelected: DataSources = [];
 
   shouldRunAfter = false;
 
@@ -40,8 +42,9 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     router: Router,
     private route: ActivatedRoute,
     private simulationService: SimulationService,
-    private foodProductService: FoodProductService,
+    // private foodProductService: FoodProductService,
     private modelService: ModelService,
+    private dataSourceService: DataSourceService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {
@@ -58,14 +61,22 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
       (_) => this.router.navigateByUrl('/error', { skipLocationChange: true })
     );
 
-    // There is initially no foodproct until we get it from the service
+    this.dataSourceService.availableDataSources().subscribe(
+      (dataSources) => {
+        this.availableDataSources = dataSources;
+        this.updateAvailableDataSourcesNotSelected();
+      },
+      (_) => this.router.navigateByUrl('/error', { skipLocationChange: true })
+    );
+
+    /* There is initially no foodproct until we get it from the service
     this.selectedFoodProduct = null;
     this.foodProductService.getAvailable().subscribe(
       (foodProducts) => {
         this.availableFoodProducts = foodProducts;
       },
       (_) => this.router.navigateByUrl('/error', { skipLocationChange: true })
-    );
+    );*/
 
     // Get parameters of the route
     this.route.params.subscribe((params) => {
@@ -76,7 +87,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
           (simulation) => {
             // Use it to prefill values
             this.simulation = simulation;
-            this.selectedFoodProduct = simulation.foodProduct;
+            // this.selectedFoodProduct = simulation.foodProduct;
             this.updateAvailableModelsNotSelected();
           },
           (_) => this.router.navigateByUrl('/error', { skipLocationChange: true })
@@ -85,10 +96,13 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
         this.simulation = {
           name: '',
           description: '',
-          foodProduct: null,
-          foodProductId: '',
+          // foodProduct: null,
+          // foodProductId: '',
           modelIds: [],
           models: [],
+          dataSourceIds: [],
+          dataSources: [],
+          bindings: []
         };
       }
     });
@@ -104,7 +118,20 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
       return;
     }
     this.availableModelsNotSelected = this.availableModels.filter(
-      (model) => !(this.simulation.modelIds && this.simulation.modelIds.includes(model.id)) && model.isConnected
+      (model) => !(this.simulation.modelIds 
+        && this.simulation.modelIds.includes(model.id)) 
+        && model.isConnected
+    );
+  }
+
+  updateAvailableDataSourcesNotSelected() {
+    if (!this.simulation) {
+      return;
+    }
+    this.availableDataSourcesNotSelected = this.availableDataSources.filter(
+      (dataSource) => !(this.simulation.dataSourceIds 
+        && this.simulation.dataSourceIds.includes(dataSource.id)) 
+        && dataSource.isConnected
     );
   }
 
@@ -210,6 +237,13 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.form.control.markAsDirty();
   }
 
+  onDataSourceAdded(dataSource: DataSourceMinimal) {
+    this.simulation.dataSources.push(dataSource);
+    this.simulation.dataSourceIds.push(dataSource.id);
+    this.updateAvailableDataSourcesNotSelected();
+    this.form.control.markAsDirty();
+  }
+
   /**
    * Each time an 'x' button is clicked, the corresponding model is removed from the list of models to be used
    * @param index index of the model to be removed from the list of models to be used
@@ -221,10 +255,17 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.form.control.markAsDirty();
   }
 
+  deleteDataSource(index: number) {
+    this.simulation.dataSources.splice(index, 1);
+    this.simulation.dataSourceIds.splice(index, 1);
+    this.updateAvailableDataSourcesNotSelected();
+    this.form.control.markAsDirty();
+  }
+
   /**
    * Each time a select button is clicked, the corresponding food product is added as the food product to be used.
    * @param foodProduct foodProduct to be added
-   */
+   * /
   onFoodProductAdded(foodProduct: FoodProductMinimal) {
     this.selectedFoodProduct = foodProduct;
     this.simulation.foodProductId = foodProduct.id;
@@ -233,7 +274,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
 
   /**
    * Each time an 'x' button is clicked, the corresponding food product is removed
-   */
+   * /
   deleteFoodProduct() {
     this.selectedFoodProduct = null;
     this.simulation.foodProductId = null;
@@ -242,11 +283,11 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
 
   /**
    * Each time the open in new tab button is clicked, the corresponding inspect food product edit page is opened in a new window
-   */
+   * /
   inspectFoodProduct() {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['available-products', 'inspect', this.selectedFoodProduct.id])
     );
     window.open(url, '_blank');
-  }
+  }*/
 }

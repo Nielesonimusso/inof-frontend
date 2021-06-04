@@ -3,7 +3,7 @@ import { HasOwner, Company, HasCreator } from './user.model';
 
 export declare type DataSources = DataSource[];
 
-export interface DataSource extends HasCreator, HasOwner {
+export interface DataSource extends DataSourceMinimal, HasCreator {
     name: string;
     ontologyUri?: string;
     gatewayUrl: string;
@@ -12,8 +12,15 @@ export interface DataSource extends HasCreator, HasOwner {
     readonly columns: ModelArgumentColumn[];
     readonly canAccess?: boolean;
     readonly useCount?: number;
+}
 
+export interface DataSourceMinimal extends HasOwner {
+    readonly canAccess?: boolean;
     readonly id?: string;
+    name: string;
+    readonly owner?: Company;
+    isConnected?: boolean;
+    price?: number;
 }
 
 

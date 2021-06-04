@@ -1,16 +1,27 @@
 import { HasOwner, HasCreator } from './user.model';
 import { ModelMinimal, ExecutedModel, ModelResult, ModelRunStatus } from './model.model';
-import { FoodProductMinimal } from './food-product.model';
+// import { FoodProductMinimal } from './food-product.model';
+import { DataSourceMinimal } from './data-source.model';
+
+
+export enum SimulationBindingType {
+  data='data',
+  model='model',
+  fixed='fixed'
+}
 
 /**
  * A Simulation object that is extended with more relevant simulation information
  */
 export interface Simulation extends SimulationMinimal, HasCreator {
   description: string;
-  readonly foodProduct?: FoodProductMinimal;
-  foodProductId: string;
+  // readonly foodProduct?: FoodProductMinimal;
+  // foodProductId: string;
   modelIds: string[];
   readonly models?: ModelMinimal[];
+  dataSourceIds: string[];
+  readonly dataSources?: DataSourceMinimal[];
+  bindings: SimulationBinding[];
 }
 
 /**
@@ -19,6 +30,12 @@ export interface Simulation extends SimulationMinimal, HasCreator {
 export interface SimulationMinimal extends HasOwner {
   readonly id?: string;
   name: string;
+}
+
+export interface SimulationBinding {
+  source: string;
+  source_type: SimulationBindingType;
+  target: string;
 }
 
 /**
@@ -56,10 +73,13 @@ export interface ExecutedSimulation extends HasCreator {
 export interface SimulationWithExecutions extends Simulation {
   readonly description: string;
   readonly executions: ExecutedSimulation[];
-  readonly foodProduct: FoodProductMinimal;
-  readonly foodProductId: string;
+  // readonly foodProduct: FoodProductMinimal;
+  // readonly foodProductId: string;
   readonly id: string;
   readonly modelIds: string[];
   readonly models: ModelMinimal[];
+  readonly dataSourceIds: string[];
+  readonly dataSources: DataSourceMinimal[];
+  readonly bindings: SimulationBinding[];
   readonly name: string;
 }

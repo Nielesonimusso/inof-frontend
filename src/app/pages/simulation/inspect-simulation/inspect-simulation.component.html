@@ -3,9 +3,9 @@
     <div class="page-header-row" style="margin-bottom: 0;">
       <h2 id="foodProductNameInTheTitle" style="margin: 0;">
         Inspecting Simulation
-        <ng-template [ngIf]="simulationWithExecutions">
+        <!--ng-template [ngIf]="simulationWithExecutions">
           {{ simulationWithExecutions.foodProduct ? 'on ' + simulationWithExecutions.foodProduct.name : '' }}
-        </ng-template>
+        </ng-template-->
       </h2>
       <!--Empty div for margin, when edit is not shown-->
       <div *ngIf="!simulationWithExecutions || (showEditButton() | async) === false" style="margin-left: auto;"></div>
@@ -77,7 +77,7 @@
             </mat-grid-tile>
             <mat-grid-tile>
               <div class="page-left-align">
-                <h4>Food Product</h4>
+                <!--h4>Food Product</h4>
                 <mat-card
                   id="simulationCardFoodProduct"
                   class="simulation-card mat-elevation-z4"
@@ -102,7 +102,37 @@
                       </mat-icon>
                     </button>
                   </mat-card-actions>
-                </mat-card>
+                </mat-card-->
+                <h4>Data sources to use</h4>
+                <div class="scrollable">
+                  <mat-card
+                    *ngFor="let dataSource of simulationWithExecutions.dataSources; index as i"
+                    id="simulationCardDataSource-{{ i }}"
+                    class="mat-elevation-z4 simulation-card"
+                    [ngClass]="dataSource.isConnected ? 'card-status-connected' : 'card-status-disconnected'"
+                  >
+                    <mat-card-title-group>
+                      <mat-card-title>{{ dataSource.name }}</mat-card-title>
+                      <!--mat-card-subtitle>
+                        {{ model.description }}
+                      </mat-card-subtitle-->
+                    </mat-card-title-group>
+                    <span class="force-right model-price">{{ dataSource.price }} €/access</span>
+                    <mat-card-actions class="model-actions">
+                      <button
+                        id="open-dataSource-{{ i }}"
+                        mat-icon-button
+                        (click)="inspectDataSource(dataSource)"
+                        style="margin-top: -8px;"
+                      >
+                        <mat-icon>
+                          open_in_new
+                        </mat-icon>
+                      </button>
+                    </mat-card-actions>
+                  </mat-card>
+                </div>
+
 
                 <h4>Models to use</h4>
                 <div class="scrollable">

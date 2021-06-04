@@ -7,6 +7,7 @@ import {
   ModelMinimal,
   isCreator,
   UserProfile,
+  DataSourceMinimal,
 } from '../../../models';
 import { SimulationService, UserService } from '../../../services';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,7 +38,7 @@ export class InspectSimulationComponent extends TabbedComponent implements OnIni
 
   sortedExecutions: ExecutedSimulation[] = [];
 
-  selectedFoodProduct: FoodProductMinimal = null;
+  // selectedFoodProduct: FoodProductMinimal = null;
   displayedColumns = ['run', 'date', 'status'];
 
   /**
@@ -72,7 +73,7 @@ export class InspectSimulationComponent extends TabbedComponent implements OnIni
             // Use it to prefill values
             this.simulationWithExecutions = simulation;
             this.processSimulationExecutions();
-            this.selectedFoodProduct = simulation.foodProduct;
+            // this.selectedFoodProduct = simulation.foodProduct;
           },
           (_) => this.router.navigateByUrl('/error', { skipLocationChange: true })
         );
@@ -129,19 +130,27 @@ export class InspectSimulationComponent extends TabbedComponent implements OnIni
   }
   /**
    * Each time the open in new tab button is clicked, the corresponding inspect food product edit page is opened in a new window
-   */
+   *
   inspectFoodProduct() {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['available-products', 'inspect', this.selectedFoodProduct.id])
     );
     window.open(url, '_blank');
-  }
+  }*/
 
   /**
-   * Each time the open in new tab button is clicked, the corresponding inspect food product edit page is opened in a new window
+   * Each time the open in new tab button is clicked, the corresponding inspect model edit page is opened in a new window
    */
   inspectModel(model: ModelMinimal) {
     const url = this.router.serializeUrl(this.router.createUrlTree(['available-models', 'inspect', model.id]));
+    window.open(url, '_blank');
+  }
+
+  /**
+   * Each time the open in new tab button is clicked, the corresponding inspect data source edit page is opened in a new window
+   */
+   inspectDataSource(dataSource: DataSourceMinimal) {
+    const url = this.router.serializeUrl(this.router.createUrlTree(['available-data-sources', 'inspect', dataSource.id]));
     window.open(url, '_blank');
   }
 

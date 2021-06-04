@@ -44,6 +44,11 @@
               <ngx-skeleton-loader count="5"></ngx-skeleton-loader>
             </div>
           </mat-tab>
+          <mat-tab label="DATA SOURCES">
+            <div class="loading-container">
+              <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
+            </div>
+          </mat-tab>
           <mat-tab label="MODELS">
             <div class="loading-container">
               <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
@@ -58,12 +63,12 @@
             <ng-template mat-tab-label>
               <span
                 [ngClass]="{
-                  'mat-tab-label-invalid': ngForm.submitted && (ngGeneralInfo.invalid || !selectedFoodProduct)
+                  'mat-tab-label-invalid': ngForm.submitted && (ngGeneralInfo.invalid)
                 }"
                 >GENERAL INFO *</span
               >
             </ng-template>
-            <mat-grid-list cols="2" rowHeight="330px">
+            <mat-grid-list cols="1" rowHeight="330px">
               <mat-grid-tile>
                 <!-- Left half of the GENERAL INFO TAB-->
                 <div class="page-left-align">
@@ -100,7 +105,7 @@
                   </table>
                 </div>
               </mat-grid-tile>
-              <!-- Right half of the GENERAL INFO TAB-->
+              <!-- Right half of the GENERAL INFO TAB-!->
               <mat-grid-tile class="overflow-y-auto">
                 <div class="page-left-align">
                   <h4>Food Product</h4>
@@ -154,6 +159,53 @@
                       pageTitle="All Available Food Products"
                     ></app-select-food-product-table>
                   </ng-template>
+                </div>
+              </mat-grid-tile-->
+            </mat-grid-list>
+          </mat-tab>
+          <!-- Data Sources TAB-->
+          <mat-tab ngModelGroup="dataSources" #ngModels="ngModelGroup">
+            <ng-template mat-tab-label>
+              <span
+                [ngClass]="{
+                  'mat-tab-label-invalid': ngForm.submitted && (ngModels.invalid || simulation.dataSources.length == 0)
+                }"
+                >DATA SOURCES *</span
+              >
+            </ng-template>
+            <mat-grid-list cols="2">
+              <mat-grid-tile class="tile-flex-start">
+                <div class="page-left-align">
+                  <h4>Data Sources to use</h4>
+                  <mat-error *ngIf="simulation.dataSources.length == 0">At least one data source needs to be selected.</mat-error>
+                  <mat-card
+                    *ngFor="let dataSource of simulation.dataSources; let i = index"
+                    class="mat-elevation-z4 model-card connected"
+                    id="dataSource-card-{{ i }}"
+                  >
+                    <mat-card-title-group>
+                      <mat-card-title>
+                        {{ dataSource.name }}
+                      </mat-card-title>
+                      <!--mat-card-subtitle>
+                        {{ model.description ? model.description.substring(0, 50) : ''
+                        }}<span *ngIf="model.description.length > 50">...</span>
+                      </mat-card-subtitle-->
+                    </mat-card-title-group>
+                    <span class="force-right">{{ dataSource.price }} €/access</span>
+                    <button id="data-source-delete-button-{{ i }}" type="button" mat-icon-button (click)="deleteDataSource(i)">
+                      <mat-icon>clear</mat-icon>
+                    </button>
+                  </mat-card>
+                </div>
+              </mat-grid-tile>
+              <mat-grid-tile class="tile-flex-start">
+                <div class="page-left-align">
+                  <app-select-data-source-table
+                    [rows]="availableDataSourcesNotSelected"
+                    (itemAdded)="onDataSourceAdded($event)"
+                    pageTitle="All Available Data Sources"
+                  ></app-select-data-source-table>
                 </div>
               </mat-grid-tile>
             </mat-grid-list>

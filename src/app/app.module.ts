@@ -54,7 +54,7 @@ import {
   SelectModelTableComponent,
   DeleteItemDialogComponent,
   AbstractSelectTableComponent,
-  SelectFoodProductTableComponent,
+  // SelectFoodProductTableComponent,
   LoadingButtonComponent,
   CancelEditsDialogComponent,
   SimulationResultsViewerComponent,
@@ -62,6 +62,7 @@ import {
   DataSourceTableComponent,
   DataSourceDataTableComponent,
   OntologyViewerComponent,
+  SelectDataSourceTableComponent,
 } from './components';
 
 /* Import Custom Directives */
@@ -163,7 +164,7 @@ import { ModelStatusesPipe } from './utilities/model-statuses-pipe';
     SelectModelTableComponent,
     ProfileComponent,
     AbstractSelectTableComponent,
-    SelectFoodProductTableComponent,
+    // SelectFoodProductTableComponent,
     CustomDateTimePipe,
     ModelStatusesPipe,
     SimulationResultsViewerComponent,
@@ -174,7 +175,8 @@ import { ModelStatusesPipe } from './utilities/model-statuses-pipe';
     AddEditDataSourceComponent,
     InspectDataSourceComponent,
     DataSourceDataTableComponent,
-    OntologyViewerComponent
+    OntologyViewerComponent,
+    SelectDataSourceTableComponent,
   ],
   // The set of NgModules whose exported declarables are available to templates in this module.
   imports: [
