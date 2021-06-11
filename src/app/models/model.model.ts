@@ -47,6 +47,8 @@ export interface ModelMinimal extends HasOwner {
   isConnected?: boolean;
   price?: number;
   description?: string;
+  ontologyUri?: string;
+  gatewayUrl?: string;
 }
 
 /**

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Simulation, SimulationResults, ExecutedSimulation, SimulationWithExecutions } from '../../models';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
-import { unwrapSimulation } from '../../utilities/unwrapSimulation';
+import { wrapBindings, unwrapSimulation } from '../../utilities/unwrapSimulation';
 
 const API_ROOT = environment.API_ROOT;
 
@@ -26,8 +26,9 @@ export class SimulationService {
    * Create a new simulation
    */
   create(simulation: Simulation): Observable<Simulation> {
+    console.log(wrapBindings(simulation));
     return this.http
-      .post<Simulation>(`${API_ROOT}/api/simulation`, simulation, { observe: 'response' })
+      .post<Simulation>(`${API_ROOT}/api/simulation`, wrapBindings(simulation), { observe: 'response' })
       .pipe(
         map((response) => {
           if (response.body as Simulation) {
@@ -64,7 +65,7 @@ export class SimulationService {
    */
   update(simulation: Simulation): Observable<Simulation> {
     return this.http
-      .put<Simulation>(`${API_ROOT}/api/simulation/${simulation.id}`, simulation, { observe: 'response' })
+      .put<Simulation>(`${API_ROOT}/api/simulation/${simulation.id}`, wrapBindings(simulation), { observe: 'response' })
       .pipe(
         map((response) => {
           if (response.body as Simulation) {

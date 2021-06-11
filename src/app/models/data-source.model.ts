@@ -21,6 +21,8 @@ export interface DataSourceMinimal extends HasOwner {
     readonly owner?: Company;
     isConnected?: boolean;
     price?: number;
+    ontologyUri?: string;
+    gatewayUrl?: string;
 }
 
 

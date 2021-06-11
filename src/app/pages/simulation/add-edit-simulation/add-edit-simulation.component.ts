@@ -1,17 +1,19 @@
-import { FoodProduct, FoodProductMinimal, Models, ModelMinimal, DataSource, DataSources, DataSourceMinimal } from '../../../models';
+import { Models, ModelMinimal, DataSources, DataSourceMinimal, SimulationBindings, SimulationBindingType, ArgumentBinding, ColumnBinding, availableSource, Model } from '../../../models';
 import { Simulation } from '../../../models';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DataSourceService, FoodProductService, ModelService, SimulationService } from '../../../services';
+import { DataSourceService, ModelService, SimulationService } from '../../../services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingButtonComponent, CancelEditsDialogComponent, CancelEditsDialogAction, TabbedComponent } from '../../../components';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { NgForm } from '@angular/forms';
+import { merge } from 'rxjs';
 
 /**
  * Add / Edit Simulation Page
  */
+
 @Component({
   selector: 'app-add-edit-simulation',
   templateUrl: './add-edit-simulation.component.html',
@@ -26,6 +28,13 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
   simulation: Simulation = null;
   availableModels: Models = [];
   availableDataSources: DataSources = [];
+
+  public get simulationBindingType(): typeof SimulationBindingType {
+    return SimulationBindingType;
+  }
+
+  simulationBindingTypes: SimulationBindingType[] = [SimulationBindingType.fixed, 
+    SimulationBindingType.data, SimulationBindingType.model];
   // availableFoodProducts: FoodProduct[];
   // selectedFoodProduct: FoodProductMinimal;
 
@@ -35,6 +44,11 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
    */
   availableModelsNotSelected: Models = [];
   availableDataSourcesNotSelected: DataSources = [];
+  originalBindings: SimulationBindings = [];
+
+  availableDataSourceInputs: availableSource[] = [];
+  availableModelOutputInputs: availableSource[] = [];
+  argumentBindingsPerModel: Map<string, SimulationBindings> = new Map<string, SimulationBindings>();
 
   shouldRunAfter = false;
 
@@ -89,6 +103,9 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
             this.simulation = simulation;
             // this.selectedFoodProduct = simulation.foodProduct;
             this.updateAvailableModelsNotSelected();
+            this.updateAvailableDataSourcesNotSelected();
+            this.updateRequiredBindingTargets();
+            this.updateAvailableBindingSources();
           },
           (_) => this.router.navigateByUrl('/error', { skipLocationChange: true })
         );
@@ -135,8 +152,214 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     );
   }
 
+  updateRequiredBindingTargets() {
+    if (!this.simulation) {
+      return;
+    }
+    // make new list of bindings based on all the inputs of the current models in the simulation
+    // TODO possibility to bind to fixed unit?? or assume value*unit pair is always provided and gather unit at simulation-time?
+
+    console.log('before update');
+    console.log(Object.assign({}, this.simulation));
+
+    this.argumentBindingsPerModel.clear();
+
+    merge(...this.simulation.models.map((model) => this.modelService.get(model.id)))
+    .pipe(finalize(() => {
+      this.simulation.bindings = Array.from(this.argumentBindingsPerModel.values()).flat();
+      console.log('after update');
+      console.log(Object.assign({}, this.simulation));
+    }))
+    .subscribe((completeModel) => {
+      // update the bindings of the simulation, also using a backup of the original bindings
+      let newBindings: ArgumentBinding[] = completeModel.inputs.map((input) => {
+        let existingBinding = this.simulation.bindings.find((binding) => 
+            binding.argumentUri == input.uri);
+        if (existingBinding) {
+          return existingBinding;
+        } else { // create new empty Argument+Column bindings
+          let newBinding: ArgumentBinding = {
+            length: 1,
+            modelName: completeModel.name,
+            argumentUri: input.uri,
+            argumentName: input.name,
+            columns: input.columns.map((column) => {
+              return {
+                selectedSource: {
+                  sourceName: '',
+                  sourceUri: '',
+                  sourceArgumentName: '',
+                  sourceArgumentUri: '',
+                  sourceColumnName: '',
+                  sourceColumnUri: ''
+                },
+                sourceColumnArray: [''],
+                sourceType: SimulationBindingType.fixed,
+                targetColumnName: column.name,
+                targetColumnUri: column.uri
+              };
+            })
+          };
+          return newBinding;
+        }
+      });
+      this.argumentBindingsPerModel.set(completeModel.name, newBindings);
+    });
+
+  }
+
+  updateAvailableBindingSources() {
+    if (!this.simulation) {
+      return;
+    }
+    
+    this.availableDataSourceInputs = [];
+    this.availableModelOutputInputs = [];
+
+    merge(
+      ...this.availableDataSources.map((dataSource) => this.dataSourceService.get(dataSource.id))
+    ).pipe(finalize(() => {
+      // update the selection fields for data sources so they display the current value
+      this.simulation.bindings.forEach((binding) => {
+        binding.columns.filter((column) => column.sourceType == SimulationBindingType.data).forEach((column) => {
+          column.selectedSource = this.availableDataSourceInputs.find(
+            (dataSource) => dataSource.sourceColumnUri == column.selectedSource.sourceColumnUri);
+        });
+      });
+    })).subscribe((completeDataSource) => {
+      Array.prototype.push.apply(this.availableDataSourceInputs, completeDataSource.columns.map((column) => {
+        return {
+          sourceName: completeDataSource.name,
+          sourceUri: completeDataSource.ontologyUri,
+          sourceArgumentName: completeDataSource.name,
+          sourceArgumentUri: completeDataSource.ontologyUri,
+          sourceColumnName: column.name,
+          sourceColumnUri: column.uri
+        }
+      }));
+    });
+
+    merge(
+      ...this.availableModels.map((model) => this.modelService.get(model.id))
+    ).pipe(finalize(() => {
+      // update the selection fields for models so they display the current value
+      this.simulation.bindings.forEach((binding) => {
+        binding.columns.filter((column) => column.sourceType == SimulationBindingType.model).forEach((column) => {
+          column.selectedSource = this.availableModelOutputInputs.find(
+            (dataSource) => dataSource.sourceColumnUri == column.selectedSource.sourceColumnUri);
+        });
+      });
+    })).subscribe((completeModel) => {
+      Array.prototype.push.apply(this.availableModelOutputInputs, completeModel.outputs.flatMap((output) =>
+        output.columns.map((column) => {
+          return {
+            sourceName: completeModel.name,
+            sourceUri: completeModel.ontologyUri,
+            sourceArgumentName: output.name,
+            sourceArgumentUri: output.uri,
+            sourceColumnName: column.name,
+            sourceColumnUri: column.uri
+          }
+        })));
+    });
+
+    // update data sources based on selected data sources
+    // this.availableDataSources.forEach((dataSource) => {
+    //   this.dataSourceService.get(dataSource.id).subscribe((completeDataSource) => {
+    //     Array.prototype.push.apply(this.availableDataSourceInputs, completeDataSource.columns.map((column) => {
+    //       return {
+    //         sourceName: dataSource.name,
+    //         sourceUri: dataSource.ontologyUri,
+    //         sourceArgumentName: dataSource.name,
+    //         sourceArgumentUri: dataSource.ontologyUri,
+    //         sourceColumnName: column.name,
+    //         sourceColumnUri: column.uri
+    //       }
+    //     }));
+    //   });
+    // });
+
+    // this.availableModels.forEach((model) => {
+    //   this.modelService.get(model.id).subscribe((completeModel) => {
+    //     Array.prototype.push.apply(this.availableModelOutputInputs, completeModel.outputs.flatMap((output) =>
+    //       output.columns.map((column) => {
+    //         return {
+    //           sourceName: model.name,
+    //           sourceUri: model.ontologyUri,
+    //           sourceArgumentName: output.name,
+    //           sourceArgumentUri: output.uri,
+    //           sourceColumnName: column.name,
+    //           sourceColumnUri: column.uri
+    //         }
+    //       })));
+    //   });
+    // });
+  }
+
+  updateSelectedSource(typeSelector, column: ColumnBinding, argument: ArgumentBinding) {
+    let selectedType: SimulationBindingType = typeSelector.value;
+    switch(selectedType) {
+      case SimulationBindingType.fixed:
+        column.selectedSource = {
+          sourceName: '',
+          sourceUri: '',
+          sourceArgumentName: '',
+          sourceArgumentUri: '',
+          sourceColumnName: '',
+          sourceColumnUri: ''
+        };
+        column.sourceColumnArray = Array(argument.length).fill("");
+        break;
+      case SimulationBindingType.data:
+        column.selectedSource = this.availableDataSourceInputs[0];
+        break;
+      case SimulationBindingType.model:
+        column.selectedSource = this.availableModelOutputInputs[0];
+        break;
+    }
+  }
+
+  /**
+   * for generating range [0..length]
+   * @param length end of range
+   * @returns [0..length]
+   */
+  range(length: number) {
+    return Array(length).fill(0).map((n,i) => i)
+  }
+
+  /**
+   * for generating clean names for use in id and name parameters of html elements
+   * removes everything but [a-zA-Z0-9]
+   * @param name name to clean
+   * @returns cleaned name
+   */
+  cleanName(name: string): string {
+    return name.replace(/[^\w]/g, "");
+  }
+
+  // updating the length of value array for fixed columns
+  onArgumentLengthChange(argument: ArgumentBinding) {
+    argument.columns.forEach((column) => {
+      if (column.sourceType == SimulationBindingType.fixed) {
+        column.sourceColumnArray.splice(argument.length);
+      }
+    });
+  }
+
+  trackByModel(_:number, model: ModelMinimal) {
+    return model.ontologyUri;
+  }
+  trackByArgument(_:number, argument: ArgumentBinding) {
+    return argument.argumentUri;
+  }
+  trackByColumn(_:number, column: ColumnBinding) {
+    return column.targetColumnUri;
+  }
+
   saveSimulation() {
     // If there is a simulation already then just update it
+    console.log(this.simulation);
     if (this.simulation.id) {
       this.simulationService
         .update(this.simulation)
@@ -234,6 +457,8 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.simulation.models.push(model);
     this.simulation.modelIds.push(model.id);
     this.updateAvailableModelsNotSelected();
+    this.updateRequiredBindingTargets();
+    this.updateAvailableBindingSources();
     this.form.control.markAsDirty();
   }
 
@@ -241,6 +466,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.simulation.dataSources.push(dataSource);
     this.simulation.dataSourceIds.push(dataSource.id);
     this.updateAvailableDataSourcesNotSelected();
+    this.updateAvailableBindingSources();
     this.form.control.markAsDirty();
   }
 
@@ -252,6 +478,8 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.simulation.models.splice(index, 1);
     this.simulation.modelIds.splice(index, 1);
     this.updateAvailableModelsNotSelected();
+    this.updateRequiredBindingTargets();
+    this.updateAvailableBindingSources();
     this.form.control.markAsDirty();
   }
 
@@ -259,35 +487,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.simulation.dataSources.splice(index, 1);
     this.simulation.dataSourceIds.splice(index, 1);
     this.updateAvailableDataSourcesNotSelected();
+    this.updateAvailableBindingSources();
     this.form.control.markAsDirty();
   }
-
-  /**
-   * Each time a select button is clicked, the corresponding food product is added as the food product to be used.
-   * @param foodProduct foodProduct to be added
-   * /
-  onFoodProductAdded(foodProduct: FoodProductMinimal) {
-    this.selectedFoodProduct = foodProduct;
-    this.simulation.foodProductId = foodProduct.id;
-    this.form.control.markAsDirty();
-  }
-
-  /**
-   * Each time an 'x' button is clicked, the corresponding food product is removed
-   * /
-  deleteFoodProduct() {
-    this.selectedFoodProduct = null;
-    this.simulation.foodProductId = null;
-    this.form.control.markAsDirty();
-  }
-
-  /**
-   * Each time the open in new tab button is clicked, the corresponding inspect food product edit page is opened in a new window
-   * /
-  inspectFoodProduct() {
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['available-products', 'inspect', this.selectedFoodProduct.id])
-    );
-    window.open(url, '_blank');
-  }*/
 }

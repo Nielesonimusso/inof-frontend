@@ -54,6 +54,11 @@
               <ngx-skeleton-loader count="3"></ngx-skeleton-loader>
             </div>
           </mat-tab>
+          <mat-tab label="BINDINGS">
+            <div class="loading-container">
+              <ngx-skeleton-loader count="5"></ngx-skeleton-loader>
+            </div>
+          </mat-tab>
         </mat-tab-group>
       </ng-template>
       <ng-template #loaded>
@@ -256,6 +261,113 @@
                 </div>
               </mat-grid-tile>
             </mat-grid-list>
+          </mat-tab>
+          <!-- Bindings tab -->
+          <mat-tab ngModelGroup="bindings" #ngModels="ngModelGroup">
+            <ng-template mat-tab-label>
+              <span
+                [ngClass]="{
+                  'mat-tab-label-invalid': ngForm.submitted && (ngModels.invalid)
+                }"
+                >BINDINGS *</span
+              >
+            </ng-template>
+            <!-- one inner tab for every model -->
+            <mat-tab-group>
+              <mat-tab *ngFor="let model of simulation.models; index as mi; trackBy: trackByModel">
+                <ng-template mat-tab-label>
+                  <span>{{ model.name }}</span>
+                </ng-template>
+                <!-- one inner tab for every argument -->
+                <mat-tab-group>
+                  <mat-tab *ngFor="let argumentBinding of argumentBindingsPerModel.get(model.name); index as ai; trackBy: trackByArgument">
+                    <ng-template mat-tab-label>
+                      <span>{{ argumentBinding.argumentName }}</span>
+                    </ng-template>
+                    <label for="{{mi}}-{{ai}}-length">length: </label>
+                    <input
+                      id="{{mi}}-{{ai}}-length"
+                      name="{{mi}}-{{ai}}-length"
+                      type="number"
+                      matInput
+                      [(ngModel)]="argumentBinding.length"
+                      (ngModelChange)="onArgumentLengthChange(argumentBinding)"
+                      />
+                    <table class="argument-binding-table">
+                      <thead>
+                        <tr>
+                          <th *ngFor="let column of argumentBinding.columns; trackBy: trackByColumn">{{ column.targetColumnName }}</th>
+                        </tr>
+                        <tr>
+                          <th *ngFor="let column of argumentBinding.columns; index as ci; trackBy: trackByColumn">
+                            <mat-select
+                              id="{{mi}}-{{ai}}-{{ci}}-source-type"
+                              name="{{mi}}-{{ai}}-{{ci}}-source-type"
+                              [(ngModel)]="column.sourceType"
+                              (selectionChange)="updateSelectedSource($event, column, argumentBinding)"
+                            >
+                              <mat-option *ngFor="let type of simulationBindingTypes" [value]="type">{{ type }}</mat-option>
+                            </mat-select>
+                            <!-- BUG todo set column.selectedSource based on selected source type, at the moment crashes DOM rendering on other than "fixed"-->
+                            <mat-select *ngIf="column.sourceType == simulationBindingType.data" 
+                              id="{{mi}}-{{ai}}-{{ci}}-source-select-data"
+                              name="{{mi}}-{{ai}}-{{ci}}-source-select-data"
+                              [(value)]="column.selectedSource"
+                              [(ngModel)]="column.selectedSource">
+                              <!-- TODO filter based on target column data type -->
+                              <mat-option *ngFor="let dataSource of availableDataSourceInputs" 
+                                [value]="dataSource"
+                                >{{ dataSource.sourceArgumentName }}.{{ dataSource.sourceColumnName }}</mat-option>
+                            </mat-select>
+                            <mat-select *ngIf="column.sourceType == simulationBindingType.model" 
+                              id="{{mi}}-{{ai}}-{{ci}}-source-select-model"
+                              name="{{mi}}-{{ai}}-{{ci}}-source-select-model"
+                              [(value)]="column.selectedSource"
+                              [(ngModel)]="column.selectedSource">
+                              <!-- TODO filter based on target column data type -->
+                              <mat-option *ngFor="let dataSource of availableModelOutputInputs" 
+                                [value]="dataSource"
+                                >{{ dataSource.sourceName }}.{{ dataSource.sourceArgumentName }}.{{ dataSource.sourceColumnName }}</mat-option>
+                            </mat-select>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let rownum of range(argumentBinding.length)">
+                          <td *ngFor="let column of argumentBinding.columns; index as ci; trackBy: trackByColumn" [ngSwitch]="column.sourceType">
+                            <input *ngSwitchCase="simulationBindingType.fixed"
+                              id="{{mi}}-{{ai}}-{{ci}}-value-{{rownum}}"
+                              name="{{mi}}-{{ai}}-{{ci}}-value-{{rownum}}"
+                              matInput
+                              [(value)]="column.sourceColumnArray[rownum]"
+                              [(ngModel)]="column.sourceColumnArray[rownum]"
+                              placeholder="value {{rownum}}"
+                              required
+                            />
+                            <!-- TODO input validation based on target column type -->
+                            <!-- TODO dropdown if external reference data source (ColumnBinding.sourceColumnUri)
+                              + update value when other column with same source is changed(?) -->
+    
+                            <input *ngSwitchCase="simulationBindingType.data" matInput disabled placeholder="N/A"/>
+                            <!-- TODO loaded data from data source (fetchData(dataSourceId)) -->
+    
+                            <input *ngSwitchCase="simulationBindingType.model" matInput disabled placeholder="-"/>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- TODO implement editable table "td*ngFor=binding.length"
+                      (using 
+                        "mat-form-field + input.matInput[(ngModel)]" for fixed
+                          + "select" for fixed with column source
+                          + "update other fixed" for multiple fixed with same source
+                        "empty" for model output
+                        "dataSourceService.fetchData" for dataset (limiting by maximum size, repeat if empty rows(?))
+                      ) -->
+                  </mat-tab>
+                </mat-tab-group>
+              </mat-tab>
+            </mat-tab-group>
           </mat-tab>
         </mat-tab-group>
       </ng-template>

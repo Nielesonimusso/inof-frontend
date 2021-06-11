@@ -100,4 +100,17 @@
       line-height: 40px;
     }
   }
+
+  .argument-binding-table {
+    width: 100%;
+    th {
+      border-bottom: 1px solid black;
+    }
+    input[disabled] {
+      background-color: lightgray;
+    }
+    input {
+      height: 2em;
+    }
+  }
 }

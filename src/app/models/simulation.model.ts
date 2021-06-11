@@ -21,7 +21,7 @@ export interface Simulation extends SimulationMinimal, HasCreator {
   readonly models?: ModelMinimal[];
   dataSourceIds: string[];
   readonly dataSources?: DataSourceMinimal[];
-  bindings: SimulationBinding[];
+  bindings: ArgumentBinding[];
 }
 
 /**
@@ -32,10 +32,43 @@ export interface SimulationMinimal extends HasOwner {
   name: string;
 }
 
-export interface SimulationBinding {
-  source: string;
-  source_type: SimulationBindingType;
-  target: string;
+export declare type SimulationBindings = ArgumentBinding[];
+
+export interface availableSource {
+  sourceName: string,
+  sourceUri: string,
+  sourceArgumentName: string,
+  sourceArgumentUri: string,
+  sourceColumnName: string,
+  sourceColumnUri: string
+};
+
+export interface ColumnBinding {
+  readonly id?: string;
+  /* selected source */
+  sourceName?: string;
+  sourceUri?: string;
+  sourceArgumentName?: string;
+  sourceArgumentUri?: string;
+  sourceColumnName?: string;
+  sourceColumnUri?: string;
+  /* end selected source */
+  sourceColumnArray?: string[];
+  sourceType: SimulationBindingType;
+
+  targetColumnName: string;
+  targetColumnUri: string;
+
+  selectedSource?: availableSource;
+}
+
+export interface ArgumentBinding {
+  readonly id?: string;
+  length: number;
+  modelName: string;
+  argumentUri: string;
+  argumentName: string;
+  columns: ColumnBinding[];
 }
 
 /**
@@ -80,6 +113,6 @@ export interface SimulationWithExecutions extends Simulation {
   readonly models: ModelMinimal[];
   readonly dataSourceIds: string[];
   readonly dataSources: DataSourceMinimal[];
-  readonly bindings: SimulationBinding[];
+  readonly bindings: ArgumentBinding[];
   readonly name: string;
 }
