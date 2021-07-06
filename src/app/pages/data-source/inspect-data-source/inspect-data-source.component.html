@@ -133,10 +133,8 @@
         </mat-tab>
         <mat-tab label="ONTOLOGY" [disabled]="!dataSource.isConnected">
           <div class="tile no-margin-block">
-            <!-- Main header in tab -->
-            <h3>Ontology provided by Data Source</h3>
             <!-- Use ModelParameterTableComponent. Bind to inputs array -->
-            <app-ontology-viewer *ngIf="dataSource.isConnected" [columns]="dataSource.columns"></app-ontology-viewer>
+            <app-ontology-viewer *ngIf="dataSource.isConnected" [columns]="dataSource.columns" [name]="dataSource.name"></app-ontology-viewer>
           </div>
         </mat-tab>
       </mat-tab-group>

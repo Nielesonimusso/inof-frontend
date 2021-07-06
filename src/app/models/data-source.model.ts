@@ -1,4 +1,4 @@
-import { ModelArgumentColumn } from './model.model';
+import { SchemaColumn } from './model.model';
 import { HasOwner, Company, HasCreator } from './user.model';
 
 export declare type DataSources = DataSource[];
@@ -9,7 +9,7 @@ export interface DataSource extends DataSourceMinimal, HasCreator {
     gatewayUrl: string;
     price: number;
     isConnected: boolean;
-    readonly columns: ModelArgumentColumn[];
+    readonly columns: SchemaColumn[];
     readonly canAccess?: boolean;
     readonly useCount?: number;
 }

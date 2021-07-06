@@ -126,9 +126,10 @@
         <mat-tab label="INPUT">
           <div class="tile no-margin-block">
             <!-- Main header in tab -->
-            <h3>Inputs for the model</h3>
+            <h2>Inputs for the model</h2>
             <!-- Use ModelParameterTableComponent. Bind to inputs array -->
-            <app-modelparameters-table class="table" [inputs]="model.inputs"></app-modelparameters-table>
+            <app-ontology-viewer *ngFor="let input of model.inputs" [columns]="input.columns" [name]="input.name"></app-ontology-viewer>
+            <!-- app-modelparameters-table class="table" [inputs]="model.inputs"></app-modelparameters-table-->
           </div>
         </mat-tab>
         <mat-tab label="OUTPUT">
@@ -136,7 +137,8 @@
             <!-- Main header in tab -->
             <h3>Outputs for the model</h3>
             <!-- Use ModelParameterTableComponent. Bind to inputs array -->
-            <app-modelparameters-table class="table" [inputs]="model.outputs"></app-modelparameters-table>
+            <!--app-modelparameters-table class="table" [inputs]="model.outputs"></app-modelparameters-table-->
+            <app-ontology-viewer *ngFor="let output of model.outputs" [columns]="output.columns" [name]="output.name"></app-ontology-viewer>
           </div>
         </mat-tab>
       </mat-tab-group>

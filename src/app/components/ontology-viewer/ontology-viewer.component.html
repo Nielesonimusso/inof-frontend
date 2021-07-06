@@ -1,16 +1,27 @@
 <!-- Material Table -->
-<table [dataSource]="columns" mat-table>
+<h3>{{ name }} schema</h3>
+<table [dataSource]="dataSource" mat-table class="ontology_table">
     <!-- Declare Columns. Order is not important: that is given by displayedColumns property -->
   
     <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th class="table-column" mat-header-cell *matHeaderCellDef>Name</th>
+    <ng-container matColumnDef="ColumnName">
+      <th class="table-column" mat-header-cell *matHeaderCellDef>Column Name</th>
       <td class="table-row" mat-cell *matCellDef="let column">{{ column.name }}</td>
     </ng-container>
-    <!-- Label Column -->
-    <ng-container matColumnDef="type">
-      <th class="table-column" mat-header-cell *matHeaderCellDef>Type</th>
+    <!-- Datatype Column -->
+    <ng-container matColumnDef="DataType">
+      <th class="table-column" mat-header-cell *matHeaderCellDef>Data Type</th>
       <td class="table-row" mat-cell *matCellDef="let column">{{ column.datatype }}</td>
+    </ng-container>
+    <!-- Unit Column -->
+    <ng-container matColumnDef="ColumnUnit">
+      <th class="table-column" mat-header-cell *matHeaderCellDef>Column Unit</th>
+      <td class="table-row" mat-cell *matCellDef="let column">{{ column.unit }}</td>
+    </ng-container>
+    <!-- Datatype Column -->
+    <ng-container matColumnDef="ColumnReference">
+      <th class="table-column" mat-header-cell *matHeaderCellDef>Column Reference</th>
+      <td class="table-row" mat-cell *matCellDef="let column" [innerHtml]="column.reference"></td>
     </ng-container>
   
     <!-- Bind columns to the displayedColumns property. Sticky Header ensures the header stays in place when the table is scrolled. -->

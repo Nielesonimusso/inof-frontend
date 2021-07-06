@@ -103,13 +103,18 @@ export interface ModelArgument {
   /* The ontology URI of the table type of the argument */
   readonly type_uri: string;
   /* The column definitions of the argument */
-  readonly columns: ModelArgumentColumn[];
+  readonly columns: SchemaColumn[];
+}
+
+export interface SchemaDefinition {
+  readonly uri: string;
+  readonly columns: SchemaColumn[];
 }
 
 /**
  * An object for storing a description of a column of a model argument
  */
-export interface ModelArgumentColumn {
+export interface SchemaColumn {
   /* The name of the column */
   readonly name: string;
   /* The ontology URI of the column */
@@ -117,9 +122,15 @@ export interface ModelArgumentColumn {
   /* The datatype of the column */
   readonly datatype: string;
   /* The unit of the column, if the column belongs to a unit-value product */
-  readonly unit?: string;
+  readonly unitType: string;
+  readonly unitUri: string;
+  readonly unitSourceUri: string;
   /* The source for possible values of the column, if applicable */
-  readonly value_source?: string;
+  readonly referenceType: string;
+  readonly referencedPropertyUri: string;
+  readonly referencedObjectUri: string;
+  readonly referencedSchema: SchemaDefinition | string[];
+  readonly referencedObjects: object[];
 }
 
 export const EmptyModel = (): Model => {

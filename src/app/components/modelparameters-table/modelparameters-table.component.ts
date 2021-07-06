@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModelArgument, ModelArgumentColumn } from '../../models';
+import { ModelArgument, SchemaColumn } from '../../models';
 
 @Component({
   selector: 'app-modelparameters-table',
@@ -17,7 +17,7 @@ export class ModelParameterTableComponent implements OnInit {
    */
   @Input() inputs: ModelArgument[] = [];
 
-  public stringFor = (column: ModelArgumentColumn): string => {
+  public stringFor = (column: SchemaColumn): string => {
     return `${column.name} (${column.datatype})`
   };
 
