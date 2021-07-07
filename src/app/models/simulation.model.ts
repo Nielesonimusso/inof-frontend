@@ -66,6 +66,7 @@ export interface ArgumentBinding {
   readonly id?: string;
   length: number;
   modelName: string;
+  modelUri: string;
   argumentUri: string;
   argumentName: string;
   columns: ColumnBinding[];

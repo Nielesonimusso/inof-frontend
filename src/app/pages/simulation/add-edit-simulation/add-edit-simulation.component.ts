@@ -181,6 +181,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
           let newBinding: ArgumentBinding = {
             length: 1,
             modelName: completeModel.name,
+            modelUri: completeModel.ontologyUri,
             argumentUri: input.uri,
             argumentName: input.name,
             columns: input.columns.map((column) => {
