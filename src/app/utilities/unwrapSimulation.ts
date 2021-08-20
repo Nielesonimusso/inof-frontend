@@ -24,7 +24,7 @@ export function unwrapBindings<T extends Simulation>(input: T): void {
   input.bindings.forEach((binding) => {
     binding.columns.forEach((column) => {
       column.sourceType = column.sourceType as SimulationBindingType;
-      if (column.sourceType == SimulationBindingType.fixed) {
+      if (column.sourceType == SimulationBindingType.input) {
         column.sourceColumnArray = column.sourceName.split('|');
       }
       column.selectedSource = {
@@ -48,7 +48,7 @@ export function unwrapBindings<T extends Simulation>(input: T): void {
 export function wrapBindings<T extends Simulation>(input: T): T {
   input.bindings.forEach((binding) => {
     binding.columns.forEach((column) => {
-      if (column.sourceType == SimulationBindingType.fixed) {
+      if (column.sourceType == SimulationBindingType.input) {
         column.sourceName = column.sourceColumnArray.join('|');
       } else {
         column.sourceName = column.selectedSource.sourceName;

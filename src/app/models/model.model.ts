@@ -130,7 +130,7 @@ export interface SchemaColumn {
   readonly referencedPropertyUri: string;
   readonly referencedObjectUri: string;
   readonly referencedSchema: SchemaDefinition | string[];
-  readonly referencedObjects: object[];
+  referencedObjects: object[];
 }
 
 export const EmptyModel = (): Model => {

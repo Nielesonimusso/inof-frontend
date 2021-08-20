@@ -9,6 +9,7 @@ import { finalize } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { NgForm } from '@angular/forms';
 import { merge } from 'rxjs';
+import { DataSource } from '@angular/cdk/collections';
 
 /**
  * Add / Edit Simulation Page
@@ -33,7 +34,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     return SimulationBindingType;
   }
 
-  simulationBindingTypes: SimulationBindingType[] = [SimulationBindingType.fixed, 
+  simulationBindingTypes: SimulationBindingType[] = [SimulationBindingType.input, 
     SimulationBindingType.data, SimulationBindingType.model];
   // availableFoodProducts: FoodProduct[];
   // selectedFoodProduct: FoodProductMinimal;
@@ -70,7 +71,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.modelService.availableModels().subscribe(
       (models) => {
         this.availableModels = models;
-        this.updateAvailableModelsNotSelected();
+        this.updateAvailableModelsSelection();
       },
       (_) => this.router.navigateByUrl('/error', { skipLocationChange: true })
     );
@@ -78,7 +79,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.dataSourceService.availableDataSources().subscribe(
       (dataSources) => {
         this.availableDataSources = dataSources;
-        this.updateAvailableDataSourcesNotSelected();
+        this.updateAvailableDataSourcesSelection();
       },
       (_) => this.router.navigateByUrl('/error', { skipLocationChange: true })
     );
@@ -102,8 +103,8 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
             // Use it to prefill values
             this.simulation = simulation;
             // this.selectedFoodProduct = simulation.foodProduct;
-            this.updateAvailableModelsNotSelected();
-            this.updateAvailableDataSourcesNotSelected();
+            this.updateAvailableModelsSelection();
+            this.updateAvailableDataSourcesSelection();
             this.updateRequiredBindingTargets();
             this.updateAvailableBindingSources();
           },
@@ -128,7 +129,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
   /**
    * Updates the availableModelsNotSelected property based on the available models that are not yet selected.
    */
-  updateAvailableModelsNotSelected() {
+  updateAvailableModelsSelection() {
     // from all available models, filter out the models which are not in simulation (i.e. offer them for choosing)
     // and they must be connected
     if (!this.simulation) {
@@ -141,7 +142,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     );
   }
 
-  updateAvailableDataSourcesNotSelected() {
+  updateAvailableDataSourcesSelection() {
     if (!this.simulation) {
       return;
     }
@@ -195,9 +196,8 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
                   sourceColumnUri: ''
                 },
                 sourceColumnArray: [''],
-                sourceType: SimulationBindingType.fixed,
-                targetColumnName: column.name,
-                targetColumnUri: column.uri
+                sourceType: SimulationBindingType.input,
+                targetColumn: column
               };
             })
           };
@@ -205,8 +205,14 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
         }
       });
       this.argumentBindingsPerModel.set(completeModel.name, newBindings);
-    });
+      // also update referenceOptions while we're at it
+      newBindings.forEach((argumentBinding) => {
+        argumentBinding.columns.forEach((columnBinding) => {
+          this.fetchOptionsForReferenceColumnInputData(columnBinding);
+        });
+      });
 
+    });
   }
 
   updateAvailableBindingSources() {
@@ -218,7 +224,9 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     this.availableModelOutputInputs = [];
 
     merge(
-      ...this.availableDataSources.map((dataSource) => this.dataSourceService.get(dataSource.id))
+      ...this.availableDataSources
+        .filter((dataSource) => this.simulation.dataSourceIds.includes(dataSource.id))
+        .map((dataSource) => this.dataSourceService.get(dataSource.id))
     ).pipe(finalize(() => {
       // update the selection fields for data sources so they display the current value
       this.simulation.bindings.forEach((binding) => {
@@ -241,7 +249,9 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     });
 
     merge(
-      ...this.availableModels.map((model) => this.modelService.get(model.id))
+      ...this.availableModels
+        .filter((model) => this.simulation.modelIds.includes(model.id))
+        .map((model) => this.modelService.get(model.id))
     ).pipe(finalize(() => {
       // update the selection fields for models so they display the current value
       this.simulation.bindings.forEach((binding) => {
@@ -264,43 +274,12 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
         })));
     });
 
-    // update data sources based on selected data sources
-    // this.availableDataSources.forEach((dataSource) => {
-    //   this.dataSourceService.get(dataSource.id).subscribe((completeDataSource) => {
-    //     Array.prototype.push.apply(this.availableDataSourceInputs, completeDataSource.columns.map((column) => {
-    //       return {
-    //         sourceName: dataSource.name,
-    //         sourceUri: dataSource.ontologyUri,
-    //         sourceArgumentName: dataSource.name,
-    //         sourceArgumentUri: dataSource.ontologyUri,
-    //         sourceColumnName: column.name,
-    //         sourceColumnUri: column.uri
-    //       }
-    //     }));
-    //   });
-    // });
-
-    // this.availableModels.forEach((model) => {
-    //   this.modelService.get(model.id).subscribe((completeModel) => {
-    //     Array.prototype.push.apply(this.availableModelOutputInputs, completeModel.outputs.flatMap((output) =>
-    //       output.columns.map((column) => {
-    //         return {
-    //           sourceName: model.name,
-    //           sourceUri: model.ontologyUri,
-    //           sourceArgumentName: output.name,
-    //           sourceArgumentUri: output.uri,
-    //           sourceColumnName: column.name,
-    //           sourceColumnUri: column.uri
-    //         }
-    //       })));
-    //   });
-    // });
   }
 
   updateSelectedSource(typeSelector, column: ColumnBinding, argument: ArgumentBinding) {
     let selectedType: SimulationBindingType = typeSelector.value;
     switch(selectedType) {
-      case SimulationBindingType.fixed:
+      case SimulationBindingType.input:
         column.selectedSource = {
           sourceName: '',
           sourceUri: '',
@@ -310,6 +289,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
           sourceColumnUri: ''
         };
         column.sourceColumnArray = Array(argument.length).fill("");
+        this.fetchOptionsForReferenceColumnInputData(column);
         break;
       case SimulationBindingType.data:
         column.selectedSource = this.availableDataSourceInputs[0];
@@ -326,7 +306,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
    * @returns [0..length]
    */
   range(length: number) {
-    return Array(length).fill(0).map((n,i) => i)
+    return Array(length).fill(0).map((_,i) => i)
   }
 
   /**
@@ -342,7 +322,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
   // updating the length of value array for fixed columns
   onArgumentLengthChange(argument: ArgumentBinding) {
     argument.columns.forEach((column) => {
-      if (column.sourceType == SimulationBindingType.fixed) {
+      if (column.sourceType == SimulationBindingType.input) {
         column.sourceColumnArray.splice(argument.length);
       }
     });
@@ -355,7 +335,47 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     return argument.argumentUri;
   }
   trackByColumn(_:number, column: ColumnBinding) {
-    return column.targetColumnUri;
+    return column.targetColumn.uri;
+  }
+
+  argumentHasInputBindings(argument: ArgumentBinding): boolean {
+    return argument.columns.some((column) => 
+      column.sourceType == SimulationBindingType.input);
+  }
+
+  argumentHasOnlyInputBindings(argument: ArgumentBinding): boolean {
+    return argument.columns.every((column) => 
+      column.sourceType == SimulationBindingType.input);
+  }
+
+  fetchOptionsForReferenceColumnInputData(argumentColumn: ColumnBinding) {
+    switch(argumentColumn.targetColumn.referenceType) {
+      case 'column':
+        let referencedTable = argumentColumn.targetColumn.referencedObjectUri;
+
+        // add extra information to targetColumn and dataSource
+        let dataSource = this.availableDataSources.find((dataSource) => dataSource.ontologyUri == referencedTable);
+        
+        this.dataSourceService.get(dataSource.id).subscribe((completeDataSource) => {
+          dataSource.columns = completeDataSource.columns;
+          argumentColumn.targetColumn
+          this.dataSourceService.fetchData(dataSource.id).subscribe((data) => {
+            argumentColumn.targetColumn.referencedObjects = data;
+
+          });
+        });
+      case 'concept':
+        // TODO handle concept options from available ontology
+        break;
+    }
+  }
+
+  columnOptions(argumentColumn: ColumnBinding): Array<any> {
+    let referencedTable = argumentColumn.targetColumn.referencedObjectUri;
+    let referencedColumn = argumentColumn.targetColumn.referencedPropertyUri;
+    let dataSource = this.availableDataSources.find((dataSource) => dataSource.ontologyUri == referencedTable);
+    let columnName = dataSource.columns?.find((column) => column.uri == referencedColumn).name;
+    return argumentColumn.targetColumn.referencedObjects.map((row) => row[columnName]);
   }
 
   saveSimulation() {
@@ -457,7 +477,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
   onModelAdded(model: ModelMinimal) {
     this.simulation.models.push(model);
     this.simulation.modelIds.push(model.id);
-    this.updateAvailableModelsNotSelected();
+    this.updateAvailableModelsSelection();
     this.updateRequiredBindingTargets();
     this.updateAvailableBindingSources();
     this.form.control.markAsDirty();
@@ -466,7 +486,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
   onDataSourceAdded(dataSource: DataSourceMinimal) {
     this.simulation.dataSources.push(dataSource);
     this.simulation.dataSourceIds.push(dataSource.id);
-    this.updateAvailableDataSourcesNotSelected();
+    this.updateAvailableDataSourcesSelection();
     this.updateAvailableBindingSources();
     this.form.control.markAsDirty();
   }
@@ -478,7 +498,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
   deleteModel(index: number) {
     this.simulation.models.splice(index, 1);
     this.simulation.modelIds.splice(index, 1);
-    this.updateAvailableModelsNotSelected();
+    this.updateAvailableModelsSelection();
     this.updateRequiredBindingTargets();
     this.updateAvailableBindingSources();
     this.form.control.markAsDirty();
@@ -487,7 +507,7 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
   deleteDataSource(index: number) {
     this.simulation.dataSources.splice(index, 1);
     this.simulation.dataSourceIds.splice(index, 1);
-    this.updateAvailableDataSourcesNotSelected();
+    this.updateAvailableDataSourcesSelection();
     this.updateAvailableBindingSources();
     this.form.control.markAsDirty();
   }

@@ -1,5 +1,5 @@
 import { HasOwner, HasCreator } from './user.model';
-import { ModelMinimal, ExecutedModel, ModelResult, ModelRunStatus } from './model.model';
+import { ModelMinimal, ExecutedModel, ModelResult, ModelRunStatus, SchemaDefinition, SchemaColumn } from './model.model';
 // import { FoodProductMinimal } from './food-product.model';
 import { DataSourceMinimal } from './data-source.model';
 
@@ -7,7 +7,7 @@ import { DataSourceMinimal } from './data-source.model';
 export enum SimulationBindingType {
   data='data',
   model='model',
-  fixed='fixed'
+  input='input'
 }
 
 /**
@@ -56,8 +56,7 @@ export interface ColumnBinding {
   sourceColumnArray?: string[];
   sourceType: SimulationBindingType;
 
-  targetColumnName: string;
-  targetColumnUri: string;
+  targetColumn: SchemaColumn;
 
   selectedSource?: availableSource;
 }

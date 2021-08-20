@@ -9,7 +9,7 @@ export interface DataSource extends DataSourceMinimal, HasCreator {
     gatewayUrl: string;
     price: number;
     isConnected: boolean;
-    readonly columns: SchemaColumn[];
+    columns: SchemaColumn[];
     readonly canAccess?: boolean;
     readonly useCount?: number;
 }
