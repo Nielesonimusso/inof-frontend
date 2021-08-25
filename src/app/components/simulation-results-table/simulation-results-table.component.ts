@@ -7,20 +7,31 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: [],
 })
 export class SimulationResultsTableComponent implements OnChanges {
-  @Input() results: any[];
+  @Input() results: Object;
 
-  displayedColumns: string[];
+  displayedColumns: Map<string, string[]>;
 
   // Datasource to connect data to the table
-  dataSource: MatTableDataSource<any>;
+  dataSources: Map<string, MatTableDataSource<any>>;
 
-  constructor() { }
+  constructor() { 
+    this.displayedColumns = new Map<string, string[]>();
+    this.dataSources = new Map<string, MatTableDataSource<any>>();
+  }
 
   ngOnChanges(): void {
     if (this.results) {
-      this.displayedColumns = this.getColumns(this.results);
-      this.dataSource = new MatTableDataSource(this.results);
+      this.displayedColumns.clear();
+      this.dataSources.clear();
+      Object.entries(this.results).forEach((result) => {
+        this.displayedColumns.set(result[0], this.getColumns(result[1]));
+        this.dataSources.set(result[0], new MatTableDataSource(result[1]))
+      });
     }
+  }
+
+  getArgumentNames(): string[] {
+    return Object.keys(this.results);
   }
 
   /**
