@@ -291,13 +291,16 @@
                   <tr>
                     <th>{{ argumentBinding.argumentName }}</th>
                     <th *ngIf="argumentHasOnlyInputBindings(argumentBinding)">
-                      <label for="">Input size:</label> 
-                      <input type="number"
-                        id="{{mi}}-{{ai}}-length"
-                        name="{{mi}}-{{ai}}-length"
-                        matInput 
-                        [(ngModel)]="argumentBinding.length"
-                        (ngModelChange)="onArgumentLengthChange(argumentBinding)">
+                      <mat-form-field>
+                        <label style="font-weight: bold; margin-right: 0.5em;" matPrefix for="{{mi}}-{{ai}}-length">Input size: </label> 
+                        <input type="number"
+                          id="{{mi}}-{{ai}}-length"
+                          name="{{mi}}-{{ai}}-length"
+                          matInput 
+                          [(ngModel)]="argumentBinding.length"
+                          (ngModelChange)="onArgumentLengthChange(argumentBinding)"
+                          min="1">
+                      </mat-form-field>
                     </th>
                   </tr>
                   <tr>
@@ -323,9 +326,9 @@
                             matInput
                             [(value)]="column.sourceColumnArray[rownum]"
                             [(ngModel)]="column.sourceColumnArray[rownum]"
-                            placeholder="value {{rownum}} {{ getUnitText(column, rownum)  }}"
                             required
-                          />
+                          /> <!-- placeholder="value {{rownum}}" -->
+                          <span matSuffix>{{ getUnit(column, rownum) }}</span>
                         </mat-form-field>
                         <!-- TODO input validation based on target column type -->
                       </ng-template>
