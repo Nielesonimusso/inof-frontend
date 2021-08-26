@@ -312,21 +312,21 @@
                           [(ngModel)]="column.sourceColumnArray[rownum]">
                           <option *ngFor="let option of columnOptions(column)" [value]="option">{{ option }}</option>
                         </select>
-                          <!-- TODO dropdown if external reference data source (ColumnBinding.sourceColumnUri)
-                            + update value when other column with same source is changed(?) -->
+                          <!-- TODO update value when other column with same source is changed(?) -->
 
                       </ng-container>
                       <ng-template #plain> <!-- plain text input -->
-                        <input
-                          id="{{mi}}-{{ai}}-{{ci}}-value-{{rownum}}"
-                          name="{{mi}}-{{ai}}-{{ci}}-value-{{rownum}}"
-                          matInput
-                          [(value)]="column.sourceColumnArray[rownum]"
-                          [(ngModel)]="column.sourceColumnArray[rownum]"
-                          placeholder="value {{rownum}}"
-                          required
-                        />
-                        <!-- TODO display unit -->
+                        <mat-form-field>
+                          <input
+                            id="{{mi}}-{{ai}}-{{ci}}-value-{{rownum}}"
+                            name="{{mi}}-{{ai}}-{{ci}}-value-{{rownum}}"
+                            matInput
+                            [(value)]="column.sourceColumnArray[rownum]"
+                            [(ngModel)]="column.sourceColumnArray[rownum]"
+                            placeholder="value {{rownum}} {{ getUnitText(column, rownum)  }}"
+                            required
+                          />
+                        </mat-form-field>
                         <!-- TODO input validation based on target column type -->
                       </ng-template>
                     </td>

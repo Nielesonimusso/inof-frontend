@@ -125,6 +125,7 @@ export interface SchemaColumn {
   readonly unitType: string;
   readonly unitUri: string;
   readonly unitSourceUri: string;
+  readonly unitLabel: string;
   /* The source for possible values of the column, if applicable */
   readonly referenceType: string;
   readonly referencedPropertyUri: string;

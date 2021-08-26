@@ -378,6 +378,33 @@ export class AddEditSimulationComponent extends TabbedComponent implements OnIni
     return argumentColumn.targetColumn.referencedObjects.map((row) => row[columnName]);
   }
 
+  getUnit(argumentColumn: ColumnBinding, rowNumber: number): string {
+    switch(argumentColumn.targetColumn.unitType) {
+      case 'none':
+        return "";
+      case 'fixed':
+        return argumentColumn.targetColumn.unitLabel;
+      case 'column':
+        return ""; //TODO
+          // 0) not relevant for anything other than 'fixed'?? (at least in UI)
+          // 0) only relevant when referred object mixed with INPUT -> needs complete INPUT row!
+          // 0) assumption -> always column of same table?
+          // 1) get object/row referred to in other column of source row
+          // 2) get property/column of said object/row that contains unit
+      case 'concept':
+        return ""; //TODO
+    }
+  }
+
+  getUnitText(argumentColumn: ColumnBinding, rowNumber: number): string {
+    let unitString = this.getUnit(argumentColumn, rowNumber);
+    if (unitString) {
+      return `(${unitString})`;
+    } else {
+      return "";
+    }
+  }
+
   saveSimulation() {
     // If there is a simulation already then just update it
     console.log(this.simulation);
