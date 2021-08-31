@@ -252,21 +252,19 @@
                     <select *ngIf="column.sourceType == simulationBindingType.data" 
                       id="{{mi}}-{{ai}}-{{ci}}-source-select-data"
                       name="{{mi}}-{{ai}}-{{ci}}-source-select-data"
-                      [(value)]="column.selectedSource"
                       [(ngModel)]="column.selectedSource">
                       <!-- TODO filter based on target column data type -->
                       <option *ngFor="let dataSource of availableDataSourceInputs" 
-                        [value]="dataSource"
+                        [ngValue]="dataSource"
                         >{{ dataSource.sourceArgumentName }}.{{ dataSource.sourceColumnName }}</option>
                     </select>
                     <select *ngIf="column.sourceType == simulationBindingType.model" 
                       id="{{mi}}-{{ai}}-{{ci}}-source-select-model"
                       name="{{mi}}-{{ai}}-{{ci}}-source-select-model"
-                      [(value)]="column.selectedSource"
                       [(ngModel)]="column.selectedSource">
                       <!-- TODO filter based on target column data type -->
                       <option *ngFor="let dataSource of availableModelOutputInputs" 
-                        [value]="dataSource"
+                        [ngValue]="dataSource"
                         >{{ dataSource.sourceName }}.{{ dataSource.sourceArgumentName }}.{{ dataSource.sourceColumnName }}</option>
                     </select>
                   </td>
