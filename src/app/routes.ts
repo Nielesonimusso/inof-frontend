@@ -119,7 +119,7 @@ const sharedDataSourcePages = [
  * This only contains all routes which are to be shown with a sidebar next to it, all other routes are defined in `app.routing.ts`
  */
 const routes: AppRoute[] = [
-  // My Food Products Page + Add / Edit / Inspect
+  /*/ My Food Products Page + Add / Edit / Inspect
   {
     path: 'my-products',
     data: {
@@ -148,7 +148,7 @@ const routes: AppRoute[] = [
       },
       ...sharedFoodProductPages
     ],
-  },
+  },*/
   // My Data Sources Page
   {
     path: 'my-data-sources',
