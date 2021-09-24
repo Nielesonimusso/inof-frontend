@@ -79,6 +79,14 @@
               code
             </mat-icon>
           </button>
+          <a 
+            class="export-button"
+            [href]="toJSONExport(getResults())" 
+            download="{{getSelectedModelName()}}_{{ executedSimulation.createdOn }}_result.json">
+            <mat-icon class="mat-18">
+              get_app
+            </mat-icon>
+          </a>
         </div>
       </div>
       <div id="code-view" *ngIf="resultsView === 'raw'" class="card-scrollable" style="background-color: #f2f2f2;">

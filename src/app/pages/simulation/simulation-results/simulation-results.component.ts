@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ExecutedSimulation, SimulationResults, ModelResult } from '../../../models';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 type ResultsView = 'tree' | 'raw' | 'table';
 
@@ -12,6 +13,8 @@ type ResultsView = 'tree' | 'raw' | 'table';
   styleUrls: ['./simulation-results.component.scss'],
 })
 export class SimulationResultsComponent {
+  constructor(private sanitizer: DomSanitizer) {}
+
   @Input() executedSimulation: ExecutedSimulation;
   @Input() executedSimulationIndex: number;
   @Input() executedSimulationResults: SimulationResults;
@@ -30,8 +33,17 @@ export class SimulationResultsComponent {
     return JSON.stringify(value, null, 4);
   }
 
+  toJSONExport(value: any) {
+    let prefix = "data:text/plain;charset=utf-8,";
+    return this.sanitizer.bypassSecurityTrustResourceUrl(prefix + JSON.stringify(value));
+  }
+
   getResults(): any {
     return this.modelResultForModel(this.executedSimulation.executedModels[this.selectedIndex].model.id).result;
+  }
+
+  getSelectedModelName(): string {
+    return this.executedSimulation.executedModels[this.selectedIndex].model.name;
   }
 
   changeView(view: ResultsView): void {
