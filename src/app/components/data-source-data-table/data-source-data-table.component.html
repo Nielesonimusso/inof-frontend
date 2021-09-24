@@ -6,6 +6,14 @@
 </ng-template>
 <!-- Material Table -->
 <ng-template #loaded>
+  <a 
+    class="export-button"
+    [href]="exportData" 
+    download="{{ dataSource.name }}_data.json">
+    <mat-icon class="mat-18">
+      get_app
+    </mat-icon>
+  </a>
   <table [dataSource]="rows" mat-table>
     <ng-container *ngFor="let column of displayedColumns" >
       <!-- Columns -->

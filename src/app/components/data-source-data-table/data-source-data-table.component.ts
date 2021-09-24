@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { DataSource } from 'src/app/models';
 import { DataSourceService } from '../../services'
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-data-source-data-table',
@@ -15,6 +16,8 @@ export class DataSourceDataTableComponent implements OnInit {
    */
   displayedColumns = [];
 
+  exportData: SafeResourceUrl = null;
+
   /**
    * The data of the table
    */
@@ -26,12 +29,21 @@ export class DataSourceDataTableComponent implements OnInit {
   @Input() dataSource: DataSource;
 
   constructor(
-    private service: DataSourceService
+    private service: DataSourceService,
+    private sanitizer: DomSanitizer
   ) {}
+
+  toJSONExport(value: any) {
+    let prefix = "data:text/plain;charset=utf-8,";
+    return this.sanitizer.bypassSecurityTrustResourceUrl(prefix + JSON.stringify(value));
+  }
 
   ngOnInit(): void {
     this.rows = this.service.fetchData(this.dataSource.id).pipe(
-      tap((data) => this.displayedColumns = Object.keys(data[0]))
+      tap((data) => {
+        this.displayedColumns = Object.keys(data[0]);
+        this.exportData = this.toJSONExport(data);
+      })
     );
     /*.subscribe((data) => {
       this.displayedColumns = Object.keys(data[0])

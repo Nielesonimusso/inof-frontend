@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ExecutedSimulation, SimulationResults, ModelResult } from '../../../models';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 
 type ResultsView = 'tree' | 'raw' | 'table';
 
